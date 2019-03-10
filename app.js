@@ -22,6 +22,7 @@ const AliceKeypair = Keypair.fromSecret('SCIXVMGTGHIOVMHRA7B7ICJ4XWAYSQP67VNSLNX
 const AliceKey = AliceKeypair.publicKey()
 const Alice = await server.loadAccount(AliceKeypair.publicKey())
 
+// Alice generates throwaway keys for her version account and for the ratchet account
 const AliceVersionKeypair = Keypair.random()
 const AliceRatchetKeypair = Keypair.random()
 
@@ -41,3 +42,105 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 
 // the Ratchet account ID is Alice's ratchet key
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
+
+const setupAccountsTx = new TransactionBuilder(Alice)
+  .addOperation(
+    Operation.createAccount({
+      destination: AliceVersionKey,
+      startingBalance: '1',
+    })
+  )
+  .addOperation(
+    Operation.createAccount({
+      destination: BobVersionKey,
+      startingBalance: '1',
+    })
+  )
+  .addOperation(
+    // set up the ratchet account
+    // which initially has only Alice's ratchet key
+    // the funding transaction will add Bob's key
+    Operation.createAccount({
+      destination: AliceRatchetKey,
+      startingBalance: '2',
+    })
+  )
+  .build()
+
+setupAccountsTx.sign(AliceKeypair)
+await server.submitTransaction(setupAccountsTx)
+
+const AliceVersion = await server.loadAccount(AliceVersionKey)
+const BobVersion = await server.loadAccount(BobVersionKey)
+const Ratchet = await server.loadAccount(RatchetAccountId)
+
+const Round0Time = moment().unix()
+const RatchetSequenceNumber = bigInt(Ratchet.sequenceNumber())
+const Ratchet0SequenceNumber = RatchetSequenceNumber.plus(3)
+
+const Snapshot0Alice = new TransactionBuilder(
+  new Account(RatchetAccountId, Ratchet0SequenceNumber.toString()),
+  {
+    timebounds: {
+      minTime: Round0Time + TIMEOUT_CLAIM + TIMEOUT_CLAIM_DELAY,
+      maxTime: 0,
+    },
+  }
+)
+  .addOperation(
+    Operation.payment({
+      destination: Alice.accountId(),
+      asset: Asset.native(),
+      amount: '250',
+    })
+  )
+  .build()
+
+const Snapshot0Bob = new TransactionBuilder(
+  new Account(
+    RatchetAccountId,
+    Ratchet0SequenceNumber.plus(1).toString()
+  ),
+  {
+    timebounds: {
+      minTime: Round0Time + TIMEOUT_CLAIM + TIMEOUT_CLAIM_DELAY,
+      maxTime: 0,
+    },
+  }
+)
+  .addOperation(
+    // gives control over the ratchet, and its remaining 750 lumens, to Bob
+    Operation.setOptions({
+      signer: { ed25519PublicKey: BobKey, weight: 2 },
+    })
+  )
+  .build()
+
+// exchange signatures
+Snapshot0Bob.sign(AliceRatchetKeypair)
+Snapshot0Alice.sign(BobRatchetKeypair)
+
+const Ratchet0Alice = new TransactionBuilder(
+  new Account(AliceVersion.accountId(), AliceVersion.sequenceNumber()),
+  { timebounds: { minTime: Round0Time, maxTime: Round0Time + TIMEOUT_CLAIM } }
+)
+  .addOperation(
+    Operation.BumpSequence({
+      sourceAccount: RatchetKey,
+      target: Ratchet0SequenceNumber.minus(1).toString(),
+    })
+  )
+  .build()
+
+const Ratchet0Bob = new TransactionBuilder(
+  new Account(BobVersion.accountId(), BobVersion.sequenceNumber()),
+  { timebounds: { minTime: Round0Time, maxTime: Round0Time + TIMEOUT_CLAIM } }
+)
+  .addOperation(
+    Operation.BumpSequence({
+      sourceAccount: RatchetKey,
+      target: Ratchet0SequenceNumber.minus(1).toString(),
+    })
+  )
+  .build()
+
