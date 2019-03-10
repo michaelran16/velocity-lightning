@@ -221,3 +221,118 @@ const Ratchet0Alice = new TransactionBuilder(
 		})
 	)
 	.build()
+
+
+const fundingTx = new TransactionBuilder(Ratchet)
+  .addOperation(
+    Operation.payment({
+      source: Alice.accountId(),
+      destination: Ratchet.accountId(),
+      asset: Asset.native(),
+      amount: '248', // Alice has already paid in 2 lumens
+    })
+  )
+  .addOperation(
+    Operation.payment({
+      source: Bob.accountId(),
+      destination: Ratchet.accountId(),
+      asset: Asset.native(),
+      amount: '750',
+    })
+  )
+  .addOperation(
+    Operation.setOptions({
+      signer: { ed25519PublicKey: BobRatchetKey, weight: 1 },
+      lowThreshold: 2,
+      medThreshold: 2,
+      highThreshold: 2,
+    })
+  )
+  .build()
+
+fundingTx.sign(AliceKeypair)
+fundingTx.sign(BobKeypair)
+fundingTx.sign(AliceRatchetKeypair)
+
+await server.submitTransaction(fundingTx)
+
+
+Const Ratchet1SequenceNumber = Ratchet0SequenceNumber.plus(3)
+const Ratchet1Account = new Account(
+  Ratchet.accountId(),
+  Ratchet1SequenceNumber.toString()
+)
+
+const Round1Time = moment().unix()
+
+const Snapshot1Alice = new TransactionBuilder(
+  new Account(RatchetAccountId, Ratchet1SequenceNumber.toString()),
+  {
+    timebounds: {
+      minTime: Round1Time + TIMEOUT_CLAIM + TIMEOUT_CLAIM_DELAY,
+      maxTime: 0,
+    },
+  }
+)
+  .addOperation(
+    Operation.payment({
+      destination: Alice.accountId(),
+      asset: Asset.native(),
+      amount: ‘500’,
+    })
+  )
+  .build()
+
+const Snapshot1Bob = new TransactionBuilder(
+  new Account(
+    RatchetAccountId,
+    Ratchet1SequenceNumber.plus(1).toString()
+  ),
+  {
+    timebounds: {
+      minTime: Round1Time + TIMEOUT_CLAIM + TIMEOUT_CLAIM_DELAY,
+      maxTime: 0,
+    },
+  }
+)
+  .addOperation(
+    Operation.setOptions({
+      signer: { ed25519PublicKey: BobKey, weight: 2 },
+    })
+  )
+  .build()
+
+// exchange signatures
+Snapshot1Alice.sign(AliceRatchetKeypair)
+Snapshot1Bob.sign(AliceRatchetKeypair)
+
+Snapshot1Alice.sign(BobRatchetKeypair)
+Snapshot1Bob.sign(BobRatchetKeypair)
+
+
+const Ratchet1Bob = new TransactionBuilder(
+  new Account(BobVersion.accountId(), BobVersion.sequenceNumber()),
+  { timebounds: { minTime: Round1Time, maxTime: Round1Time + TIMEOUT_CLAIM } }
+)
+  .addOperation(
+    Operation.BumpSequence({
+      sourceAccount: RatchetKey,
+      target: Ratchet1SequenceNumber.minus(1).toString(),
+    })
+  )
+  .build()
+
+const Ratchet1Alice = new TransactionBuilder(
+  new Account(AliceVersion.accountId(), AliceVersion.sequenceNumber()),
+  { timebounds: { minTime: Round1Time, maxTime: Round1Time + TIMEOUT_CLAIM } }
+)
+  .addOperation(
+    (Operation as any).BumpSequence({
+      sourceAccount: RatchetKey,
+      target: Ratchet1SequenceNumber.minus(1).toString(),
+    })
+  )
+  .build()
+
+Ratchet1Bob.sign(AliceRatchetKeypair)
+Ratchet1Alice.sign(BobRatchetKeypair)
