@@ -28,6 +28,24 @@ const AliceRatchetKeypair = Keypair.random()
 const AliceVersionKey = AliceVersionKeypair.publicKey()
 const AliceRatchetKey = AliceRatchetKeypair.publicKey()
 
+const TIMEOUT_CLAIM = moment.duration(2, 'week').seconds()
+const TIMEOUT_CLAIM_DELAY = moment.duration(1, 'week').seconds()
+
+const server = new Server('https://horizon-testnet.stellar.org')
+Network.useTestNetwork()
+
+// Alice and Bob are preexisting funded accounts controlled by AliceKeypair and BobKeypair
+
+const AliceKeypair = Keypair.fromSecret('SAOUXBXNAG6PLZZQIG3CYU555RCJSQT46YVVSO7CBB2DMIO7JEZU4MK4')
+const AliceKey = AliceKeypair.publicKey()
+
+// Alice generates throwaway keys for her version account and for the ratchet account
+const AliceVersionKeypair = Keypair.random()
+const AliceRatchetKeypair = Keypair.random()
+
+const AliceVersionKey = AliceVersionKeypair.publicKey()
+const AliceRatchetKey = AliceRatchetKeypair.publicKey()
+
 // Bob does the same
 const BobKeypair = Keypair.fromSecret('SAQZRQFCUTMZFVSF7HSSWORDS5WRBBCMR5HWGP3NTBBEK7BGKEU5KRQP')
 const BobKey = BobKeypair.publicKey()
@@ -104,8 +122,8 @@ console.log("====== ====== ====== ====== ======")
 
 // exports.step3 = async ctx => {
 
-// First, they prepare snapshot transactions reflecting their 
-// current balances, and exchange their signatures on them.	
+// First, they prepare snapshot transactions reflecting their
+// current balances, and exchange their signatures on them.
 
 const Round0Time = moment().unix()
 const RatchetSequenceNumber = bigInt(Ratchet.sequenceNumber())
@@ -113,7 +131,7 @@ const Ratchet0SequenceNumber = RatchetSequenceNumber.plus(3)
 
 const Snapshot0Alice = new TransactionBuilder(
 	new Account(
-		RatchetAccountId, 
+		RatchetAccountId,
 		Ratchet0SequenceNumber.toString()
 	),
 	{
@@ -176,21 +194,21 @@ console.log("====== ====== ====== ====== ======")
 
 // exports.step4 = async ctx => {
 
-// exchange their initial Ratchet transactions, which will bump 
-// the sequence number of the ratchet account to the sequence 
+// exchange their initial Ratchet transactions, which will bump
+// the sequence number of the ratchet account to the sequence
 // number immediately preceding the snapshot transactions
 
 const Ratchet0Alice = new TransactionBuilder(
 	new Account(
-		AliceVersion.accountId(), 
+		AliceVersion.accountId(),
 		AliceVersion.sequenceNumber()
 	),
-	{ 
+	{
 		fee: 100,
-		timebounds: { 
-			minTime: Round0Time, 
-			maxTime: Round0Time + TIMEOUT_CLAIM 
-		} 
+		timebounds: {
+			minTime: Round0Time,
+			maxTime: Round0Time + TIMEOUT_CLAIM
+		}
 	}
   )
 	.addOperation(
@@ -200,17 +218,17 @@ const Ratchet0Alice = new TransactionBuilder(
 		})
 	)
 	.build()
-  
+
   const Ratchet0Bob = new TransactionBuilder(
 	new Account(
-		BobVersion.accountId(), 
+		BobVersion.accountId(),
 		BobVersion.sequenceNumber()
 	),
-	{ 
+	{
 		fee: 100,
-		timebounds: { 
-			minTime: Round0Time, 
-			maxTime: Round0Time + TIMEOUT_CLAIM 
+		timebounds: {
+			minTime: Round0Time,
+			maxTime: Round0Time + TIMEOUT_CLAIM
 		}
 	}
   )
