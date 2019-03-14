@@ -254,7 +254,7 @@ fundingTx.sign(AliceRatchetKeypair)
 server.submitTransaction(fundingTx)
 
 
-Const Ratchet1SequenceNumber = Ratchet0SequenceNumber.plus(3)
+const Ratchet1SequenceNumber = Ratchet0SequenceNumber.plus(3)
 const Ratchet1Account = new Account(
   Ratchet.accountId(),
   Ratchet1SequenceNumber.toString()
@@ -275,7 +275,7 @@ const Snapshot1Alice = new TransactionBuilder(
     Operation.payment({
       destination: Alice.accountId(),
       asset: Asset.native(),
-      amount: ‘500’,
+      amount: '500',
     })
   )
   .build()
@@ -323,12 +323,12 @@ const Ratchet1Alice = new TransactionBuilder(
   new Account(AliceVersion.accountId(), AliceVersion.sequenceNumber()),
   { timebounds: { minTime: Round1Time, maxTime: Round1Time + TIMEOUT_CLAIM } }
 )
-  .addOperation(
-    (Operation as any).BumpSequence({
-      sourceAccount: RatchetKey,
-      target: Ratchet1SequenceNumber.minus(1).toString(),
-    })
-  )
+//   .addOperation(
+//     (Operation as any).BumpSequence({
+//       sourceAccount: RatchetKey,
+//       target: Ratchet1SequenceNumber.minus(1).toString(),
+//     })
+//   )
   .build()
 
 Ratchet1Bob.sign(AliceRatchetKeypair)
