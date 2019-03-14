@@ -28,24 +28,6 @@ const AliceRatchetKeypair = Keypair.random()
 const AliceVersionKey = AliceVersionKeypair.publicKey()
 const AliceRatchetKey = AliceRatchetKeypair.publicKey()
 
-const TIMEOUT_CLAIM = moment.duration(2, 'week').seconds()
-const TIMEOUT_CLAIM_DELAY = moment.duration(1, 'week').seconds()
-
-const server = new Server('https://horizon-testnet.stellar.org')
-Network.useTestNetwork()
-
-// Alice and Bob are preexisting funded accounts controlled by AliceKeypair and BobKeypair
-
-const AliceKeypair = Keypair.fromSecret('SAOUXBXNAG6PLZZQIG3CYU555RCJSQT46YVVSO7CBB2DMIO7JEZU4MK4')
-const AliceKey = AliceKeypair.publicKey()
-
-// Alice generates throwaway keys for her version account and for the ratchet account
-const AliceVersionKeypair = Keypair.random()
-const AliceRatchetKeypair = Keypair.random()
-
-const AliceVersionKey = AliceVersionKeypair.publicKey()
-const AliceRatchetKey = AliceRatchetKeypair.publicKey()
-
 // Bob does the same
 const BobKeypair = Keypair.fromSecret('SAQZRQFCUTMZFVSF7HSSWORDS5WRBBCMR5HWGP3NTBBEK7BGKEU5KRQP')
 const BobKey = BobKeypair.publicKey()
@@ -59,9 +41,6 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 // the Ratchet account ID is Alice's ratchet key
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
 
-
-const Alice = await server.loadAccount(AliceKeypair.publicKey())
-const Bob = await server.loadAccount(BobKey)
 
 console.log("Alice.publicKey is " + AliceKey);
 console.log("Bob.publicKey is " + BobKey);
@@ -101,11 +80,11 @@ const setupAccountsTx = new TransactionBuilder(Alice, {fee: 100}).addOperation(
 .build()
 
 setupAccountsTx.sign(AliceKeypair)
-await server.submitTransaction(setupAccountsTx)
+server.submitTransaction(setupAccountsTx)
 
-const AliceVersion = await server.loadAccount(AliceVersionKey)
-const BobVersion = await server.loadAccount(BobVersionKey)
-const Ratchet = await server.loadAccount(RatchetAccountId)
+const AliceVersion = server.loadAccount(AliceVersionKey)
+const BobVersion = server.loadAccount(BobVersionKey)
+const Ratchet = server.loadAccount(RatchetAccountId)
 
 console.log(Alice.balances);
 console.log(Bob.balances);
@@ -272,7 +251,7 @@ fundingTx.sign(AliceKeypair)
 fundingTx.sign(BobKeypair)
 fundingTx.sign(AliceRatchetKeypair)
 
-await server.submitTransaction(fundingTx)
+server.submitTransaction(fundingTx)
 
 
 Const Ratchet1SequenceNumber = Ratchet0SequenceNumber.plus(3)
