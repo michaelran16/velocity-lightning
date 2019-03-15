@@ -1,0 +1,29 @@
+{
+  "name": "velocity-lightning",
+  "version": "1.0.0",
+  "description": "This is a lightning network implementation for Stellar blockchain.",
+  "main": "index.js",
+  "dependencies": {
+    "big-integer": "^1.6.44",
+    "koa": "^2.7.0",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelran16/velocity-lightning.git"
+  },
+  "keywords": [
+    "lightning",
+    "network"
+  ],
+  "author": "Michael",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michaelran16/velocity-lightning/issues"
+  },
+  "homepage": "https://github.com/michaelran16/velocity-lightning#readme"
+}
