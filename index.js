@@ -41,11 +41,13 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 // the Ratchet account ID is Alice's ratchet key
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
 
-
 console.log("Alice.publicKey is " + AliceKey);
 console.log("Bob.publicKey is " + BobKey);
 console.log();
 console.log("Also, AliceVersionKey, AliceRatchetKey, BobVersionKey, BobRatchetKey are generated");
+
+const Alice = server.loadAccount(AliceKeypair.publicKey())
+const Bob = server.loadAccount(BobKey)
 
 // 	await ctx.render('stellar/step1', {
 //         session : ctx.session,
