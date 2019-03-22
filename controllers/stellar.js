@@ -42,6 +42,12 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
 
 exports.setup = async ctx => {
+	await ctx.render('stellar/setup', {
+        session : ctx.session,
+    })
+}
+
+exports.step1 = async ctx => {
 
 	const Alice = await server.loadAccount(AliceKeypair.publicKey())
 	const Bob = await server.loadAccount(BobKey)

@@ -1,7 +1,8 @@
 //引入模块
 const router = require('koa-router')()
-const controllers = require('../stellar')
+const controllers = require('../controllers/stellar')
 
 router.get('/stellar/setup', controllers.setup)
+router.get('/stellar/step1', controllers.step1)
 
 module.exports = router
