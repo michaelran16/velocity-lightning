@@ -6,6 +6,7 @@
   "dependencies": {
     "big-integer": "^1.6.44",
     "koa": "^2.8.1",
+    "koa-router": "^7.4.0",
     "moment": "^2.24.0",
     "stellar-sdk": "^2.3.0"
   },

@@ -312,7 +312,3 @@ exports.step1 = async ctx => {
 		step : 6,
 	})
 }
-
-exports.step7 = async ctx => {
-	// They now can create and exchange signatures on new ratchet transactions
-}
