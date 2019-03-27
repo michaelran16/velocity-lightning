@@ -42,9 +42,7 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
 
 exports.setup = async ctx => {
-	await ctx.render('stellar/setup', {
-        session : ctx.session,
-    })
+	await ctx.render('stellar/setup')
 }
 
 exports.step1 = async ctx => {
@@ -307,8 +305,5 @@ exports.step1 = async ctx => {
 	console.log("Ratchet AccountId 最近余额：https://horizon-testnet.stellar.org/accounts/" + RatchetAccountId + "/");
 	console.log("====== ====== ====== ====== ======")
 
-	await ctx.render('stellar/step6', {
-		session : ctx.session,
-		step : 6,
-	})
+	await ctx.render('stellar/step6')
 }
