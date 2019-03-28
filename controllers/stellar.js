@@ -11,7 +11,7 @@ const {
 } = require('stellar-sdk')
 
 const TIMEOUT_CLAIM = moment.duration(2, 'week').seconds()
-const TIMEOUT_CLAIM_DELAY = moment.duration(1, 'week').seconds()
+const TIMEOUT_CLAIM_DELAY = moment.setup(1, 'week').seconds()
 
 const server = new Server('https://horizon-testnet.stellar.org')
 Network.useTestNetwork()
@@ -41,9 +41,6 @@ const BobRatchetKey = BobRatchetKeypair.publicKey()
 // the Ratchet account ID is Alice's ratchet key
 const RatchetAccountId = AliceRatchetKeypair.publicKey()
 
-exports.setup = async ctx => {
-	await ctx.render('stellar/setup')
-}
 
 exports.step1 = async ctx => {
 
