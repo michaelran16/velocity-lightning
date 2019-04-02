@@ -5,12 +5,19 @@
   "main": "index.js",
   "dependencies": {
     "big-integer": "^1.6.44",
-    "koa": "^2.8.1",
+    "ejs": "^2.6.2",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
+    "koa-session": "^5.12.0",
+    "koa-static": "^5.0.0",
+    "koa-static-cache": "^5.1.2",
     "koa-views": "^6.2.0",
+    "md5": "^2.2.1",
     "moment": "^2.24.0",
-    "path": "^0.12.7",
-    "stellar-sdk": "^2.3.0"
+    "node-fetch": "^2.6.0",
+    "socket.io": "^2.2.0",
+    "stellar-sdk": "^1.0.5"
   },
   "devDependencies": {},
   "scripts": {
