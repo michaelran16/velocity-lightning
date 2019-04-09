@@ -7,8 +7,8 @@ const StellarSdk = require('stellar-sdk');
 StellarSdk.Network.useTestNetwork();
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
 
-exports.getTxList = async ctx => {
-	await ctx.render('transaction/transaction-list', {
+exports.getLobby = async ctx => {
+	await ctx.render('transaction/lobby', {
 		session : ctx.session
 	})
 }
