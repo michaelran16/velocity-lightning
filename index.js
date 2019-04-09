@@ -22,6 +22,10 @@ app.use(koaStatic(
 	path.join(__dirname, './static')
 ))
 
+app.use(staticCache(path.join(__dirname, './static/css'), {dynamic:true}, {
+	maxAge : 365*24*60*60
+}))
+
 app.use(views(path.join(__dirname, './views'), {
   extension: 'ejs'
 }))
