@@ -1,0 +1,36 @@
+<%- include("../layouts/head",{type:'login'}) %>
+	<h1 style="text-align: center;">Exchange Snapshot</h1>
+	<div class="container">
+		<form class="form create" method="post ">
+			<div class="submit">Exchange</div>
+		</form>		
+	</div>
+	<script>
+		$(window).keyup(function(e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			console.log($('.form').serialize())
+			$.ajax({
+				url: "/snapshoot",
+				type: "POST",
+				cache: false,
+				dataType: 'json',
+				success: function (data) {
+				    if(data.code==200) {
+					    fade('Exchange Successful')
+					    console.log(data)
+				    } else {
+						$('input').val('')
+					    fade('Channel failed')
+				    }
+				},
+				error: function () {
+					fade('Error')
+				}
+			})
+		})		
+	</script>
+<% include ../layouts/foot %>

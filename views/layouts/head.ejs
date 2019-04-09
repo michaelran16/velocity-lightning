@@ -7,4 +7,14 @@
 </head>
 <body>
 	<header>
+		<div class="user_name">
+			<% if (session.name) { %>
+				 Hello,<%= session.name %>
+			<% } %>
+			<% if (!session.name) { %>
+				欢迎注册登录^_^
+			<% } %>
+		</div>
+		<div class="message">登录成功</div>
+		
 	</header>

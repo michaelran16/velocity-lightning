@@ -1,0 +1,56 @@
+<%- include("../layouts/head",{type:'register'}) %>
+	<div class="container">
+		<form class="form create" method="post">
+			<div>
+				<label>Username：</label>
+				<input placeholder="Input Username" type="text" name="name" value="alice" readonly="readonly">
+			</div>
+			<div>
+				<label>Password：</label>
+				<input placeholder="Input password" class="password" type="password" name="password">
+			</div>
+			<div class="submit">Register</div>
+		</form>
+	</div>
+	<script>
+		$(window).keyup(function (e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			if ($('input[name=name]').val().trim() == '') {
+				fade('Input Username！')
+			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
+				fade('Input valid username please！')
+			} else {
+				$.ajax({
+					url: "/register",
+					data: {
+						name: $('input[name=name]').val(),
+						password: $('input[name=password]').val(),
+					},
+					type: "POST",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+					   if (data.message == 'User exists') {
+						   $('input').val('')
+						   fade('username exists')
+					   } else if(data.message == 'register successful') {
+							fade('register successful')
+							setTimeout(()=>{
+								window.location.href="/login"	  
+							},1000)
+					   	} else {
+							fade(data.message)
+					   	}
+					},
+					error: function () {
+						fade('Error')
+					}
+				})			
+			}
+		})		
+	</script>
+<%- include ../layouts/foot %>

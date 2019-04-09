@@ -1,0 +1,50 @@
+<%- include("../layouts/head",{type:'login'}) %>
+	<div class="container">
+		<form class="form create" method="post ">
+			<div>
+				<label>User name：</label>
+				<input placeholder="Username" type="text" name="name" value="alice" readonly="readonly">
+			</div>
+			<div>
+				<label>Password：</label> 
+				<input placeholder="Password" type="password" name="password">
+			</div>
+			<div class="submit">Log In</div>
+		</form>		
+	</div>
+	<script>
+		$(window).keyup(function(e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			if ($('input[name=name]').val().trim() == '' || $('input[name=password]').val().trim() == '' ) {
+				fade('Input User name or Password')
+			} else {
+				console.log($('.form').serialize())
+				$.ajax({
+					url: "/login",
+					data: $('.form').serialize(),
+					type: "POST",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+					    if(data.code==200) {
+						    fade('Login Success')
+						    setTimeout(()=>{
+							    window.location.href = "/transaction-list"
+						    },1500)	               	
+					    } else {
+							$('input').val('')
+						    fade('Username or Password Failed')
+					    }
+					},
+					error: function () {
+						fade('Error')
+					}
+				})			
+			}
+		})		
+	</script>
+<% include ../layouts/foot %>

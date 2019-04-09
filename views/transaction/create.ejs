@@ -1,0 +1,60 @@
+<%- include("../layouts/head",{type:'login'}) %>
+	<h1 style="text-align: center;">Open a channel</h1>
+	<div class="container">
+		<form class="form create" method="post ">
+			<div>
+				<label>Partner Stellar Address：</label> 
+				<input type="text" name="stellar_address">
+			</div>
+			<div>
+				<label>Partner IP Address：</label> 
+				<input type="text" name="ip_address">
+			</div>
+			<div>
+				<label>Amount：<span style="color:gray;font-size:10px">（Current balance:<%= balance %>）</span></label>
+				<input type="text" name="amount">
+			</div>
+			<div class="submit">Open</div>
+		</form>		
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+	<script>
+		var socket = io.connect('http://127.0.0.1:7000');
+	    socket.on('receive', function(data) {
+	    	console.log(data.text)
+	    });
+		$(window).keyup(function(e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			socket.emit('send', { text : '1'});
+			if ($('input[name=stellar_address]').val().trim() == '' || $('input[name=ip_address]').val().trim() == '' || $('input[name=amount]').val().trim() == '' ) {
+				fade('Please input Stellar Address, IP Address or Amount')
+			} else {
+				console.log($('.form').serialize())
+				$.ajax({
+					url: "/create",
+					data: $('.form').serialize(),
+					type: "POST",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+					    if(data.code==200) {
+						    fade('Application Sent')
+						    window.location.href="/transaction-list"
+					    } else {
+							$('input').val('')
+						    fade('Application Failed')
+					    }
+					},
+					error: function () {
+						fade('Error')
+					}
+				})			
+			}
+		})		
+	</script>
+<% include ../layouts/foot %>

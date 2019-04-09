@@ -1,3 +1,5 @@
+const checkNotLogin = require('../components/checkLogin.js').checkNotLogin;
+const checkLogin = require('../components/checkLogin.js').checkLogin;
 const fs = require('fs')
 const moment = require('moment')
 const bigInt = require('big-integer')
