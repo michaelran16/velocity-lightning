@@ -133,3 +133,65 @@ exports.postHelper = async ctx => {
 		message : '创建成功'
 	}
 }
+exports.getSnapshoot = async ctx => {
+	await ctx.render('transaction/snapshoot', {
+		session : ctx.session,
+	})
+}
+exports.postSnapshoot = async ctx => {
+	let aliceInfo  = await new Promise((resolve, reject) => {
+		fs.readFile('./user.txt', 'utf-8', function(err, data){
+			if (err) {
+				reject(err)
+			} else {
+				resolve(JSON.parse(data))
+			}
+		})
+	})
+	let Alice = await server.loadAccount(aliceInfo.stellarPublic)
+	let helperData  = await new Promise((resolve, reject) => {
+		fs.readFile('./helper.txt', 'utf-8', function(err, data){
+			if (err) {
+				reject(err)
+			} else {
+				if (data) {
+					resolve(JSON.parse(data))
+				} else {
+					resolve('')
+				}
+			}
+		})
+	})
+	
+	let AliceRatchet = await server.loadAccount(helperData.AliceRatchetPublic);
+	let Round0Time = moment().unix();
+
+	let RatchetSequenceNumber = bigInt(AliceRatchet.sequenceNumber())
+	let Ratchet0SequenceNumber = RatchetSequenceNumber.plus(3)
+
+	let snapshot = new StellarSdk.TransactionBuilder(
+		new StellarSdk.Account(
+			helperData.AliceRatchetPublic,
+			Ratchet0SequenceNumber.toString()
+		),{
+			fee : 100,
+			timebounds: {
+				minTime: Round0Time,
+				maxTime: 0,
+			},
+		}
+	).addOperation(
+		StellarSdk.Operation.payment({
+			destination: Alice.accountId(),
+			asset: StellarSdk.Asset.native(),
+			amount: '250',
+		})
+	)
+	.setTimeout(1000)
+	.build()
+	console.log(snapshot)
+	ctx.body = {
+		code : 200,
+		message : '成功'
+	}
+}
