@@ -195,3 +195,12 @@ exports.postSnapshoot = async ctx => {
 		message : '成功'
 	}
 }
+exports.getRatchet = async ctx => {
+	await ctx.render('/transaction/ratchet')
+}
+exports.postRatchet = async ctx => {
+	ctx.body = {
+		code : 200,
+		message : '成功'
+	}
+}
