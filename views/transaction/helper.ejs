@@ -1,0 +1,43 @@
+<%- include("../layouts/head",{type:'login'}) %>
+	<h1 style="text-align: center;">Create Rachet Account</h1>
+	<div class="container">
+		<form class="form create" method="post ">
+			<div>
+				<input type="text" value="<%= message %>" readonly="readonly">
+			</div>
+			<div>
+				<label>Balance：</label>
+				<input type="text" value="<%= balance %>" readonly="readonly">
+			</div>
+			<div class="submit">Create</div>
+		</form>		
+	</div>
+	<script>
+		$(window).keyup(function(e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			console.log($('.form').serialize())
+			$.ajax({
+				url: "/helper",
+				type: "POST",
+				cache: false,
+				dataType: 'json',
+				success: function (data) {
+				    if(data.code==200) {
+					    fade('Successful')
+					    console.log(data)
+				    } else {
+						$('input').val('')
+					    fade('Failed')
+				    }
+				},
+				error: function () {
+					fade('Error')
+				}
+			})
+		})		
+	</script>
+<% include ../layouts/foot %>

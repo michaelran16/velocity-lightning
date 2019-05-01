@@ -4,9 +4,45 @@
 	<meta charset="UTF-8">
 	<title>alice</title>
 	<link rel="stylesheet" href="/index.css">
+	<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		function fade(txt){
+			$('.message').text(txt)
+			$('.message').animate({
+				top:0
+			})
+			setTimeout(function(){
+				$('.message').animate({
+					top: '-100%'
+				})
+			},1500)
+		}
+		$(function(){
+			$('.logout').click(()=>{
+				$.ajax({
+					url: "/logout",
+					type: "GET",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+						if (data.code==200) {
+							fade('退出成功')
+							setTimeout(()=>{
+								window.location.href = "/login"
+							},1500)	
+						}
+					},
+					error: function () {
+						alert('异常');
+					}
+				})
+			})
+		})
+	</script>
 </head>
 <body>
 	<header>
+
 		<div class="user_name">
 			<% if (session.name) { %>
 				 Hello,<%= session.name %>
@@ -16,5 +52,31 @@
 			<% } %>
 		</div>
 		<div class="message">登录成功</div>
+		<div class="user_right">
+			<%  if (session.name) { %>
+				<div class="has_user">
+					<% if (type == 'lobby') { %>
+						<a class="active" href="/lobby">大厅</a>
+					<% } else { %>
+						<a href="/lobby">大厅</a>
+					<% } %>
+					<span class="logout">退出</span>
+				</div>
+			<% } %>
+			<% if (!session.name) { %>
+				<div class="none_user has_user">
+					<% if (type == 'register') { %>
+						<a class="active" href="/register">注册</a>
+					<% } else { %>
+						<a href="/register">注册</a>
+					<% } %>
+					<% if (type == 'login') { %>
+						<a class="active" href="/login">登录</a>
+					<% } else { %>
+						<a href="/login">登录</a>
+					<% } %>
+				</div>
+			<% } %>
+		</div>
 		
 	</header>
