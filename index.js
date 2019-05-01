@@ -34,6 +34,7 @@ app.use(bodyParser({
 }))
 
 // routing config
+app.use(require('./routers/user.js').routes())
 app.use(require('./routers/transaction.js').routes())
 
 let server = app.listen(`${config.port}`)
