@@ -1,3 +1,4 @@
+// import
 const koa = require('koa')
 const path = require('path')
 const bodyParser = require('koa-bodyparser')
@@ -10,6 +11,7 @@ const koaStatic = require('koa-static')
 const staticCache = require('koa-static-cache')
 const socket = require('socket.io')
 
+// instantiate Koa
 const app = new koa()
 app.keys = ['secret'];
 const sessionConfig = {
@@ -18,14 +20,17 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig, app));
 
+// static resources middleware
 app.use(koaStatic(
 	path.join(__dirname, './static')
 ))
 
+// caching config
 app.use(staticCache(path.join(__dirname, './static/css'), {dynamic:true}, {
 	maxAge : 365*24*60*60
 }))
 
+// rendering middleware
 app.use(views(path.join(__dirname, './views'), {
   extension: 'ejs'
 }))
@@ -37,6 +42,7 @@ app.use(bodyParser({
 app.use(require('./routers/user.js').routes())
 app.use(require('./routers/transaction.js').routes())
 
+// server port
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)
 let io = socket(server);

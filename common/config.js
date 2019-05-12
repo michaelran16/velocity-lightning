@@ -6,6 +6,7 @@ const config = {
 		PORT : 3306,
 		HOST : '127.0.0.1',
 	},
+    
 	// MySQL port
 	port : 7000,
 }
