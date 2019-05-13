@@ -1,5 +1,5 @@
 module.exports = {
-	// already logged in
+	//已经登录
 	checkNotLogin : (ctx) => {
 		if (ctx.session && ctx.session.name) {
 			ctx.redirect('/lobby')
@@ -7,8 +7,7 @@ module.exports = {
 		}
 		return true;
 	},
-    
-	// not logged in yet
+	//没有登录
 	checkLogin : (ctx) => {
 		if (!ctx.session || !ctx.session.name) {
 			ctx.redirect('/login')

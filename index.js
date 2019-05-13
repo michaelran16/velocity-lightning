@@ -1,4 +1,4 @@
-// import
+//引入模块
 const koa = require('koa')
 const path = require('path')
 const bodyParser = require('koa-bodyparser')
@@ -10,39 +10,33 @@ const session = require('koa-session')
 const koaStatic = require('koa-static')
 const staticCache = require('koa-static-cache')
 const socket = require('socket.io')
-
-// instantiate Koa
+//实例化Koa
 const app = new koa()
 app.keys = ['secret'];
 const sessionConfig = {
-	key : "alice", /* cookie key (default is koa:sess) */
-	httpOnly : false, /** (boolean) httpOnly or not (default true) */
+	key : "alice",
+	httpOnly : false,
 }
 app.use(session(sessionConfig, app));
-
-// static resources middleware
+//静态资源加载中间件配置
 app.use(koaStatic(
 	path.join(__dirname, './static')
 ))
-
-// caching config
+//缓存配置
 app.use(staticCache(path.join(__dirname, './static/css'), {dynamic:true}, {
 	maxAge : 365*24*60*60
 }))
-
-// rendering middleware
+//模板渲染中间件配置
 app.use(views(path.join(__dirname, './views'), {
   extension: 'ejs'
 }))
 app.use(bodyParser({
 	formLimit : '1mb'
 }))
-
-// routing config
+//路由配置
 app.use(require('./routers/user.js').routes())
 app.use(require('./routers/transaction.js').routes())
-
-// server port
+//监听端口
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)
 let io = socket(server);

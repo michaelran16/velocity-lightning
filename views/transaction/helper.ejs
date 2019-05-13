@@ -1,15 +1,15 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<h1 style="text-align: center;">Create Rachet Account</h1>
+	<h1 style="text-align: center;">创建辅助账号</h1>
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
 				<input type="text" value="<%= message %>" readonly="readonly">
 			</div>
 			<div>
-				<label>Balance：</label>
+				<label>余额：</label>
 				<input type="text" value="<%= balance %>" readonly="readonly">
 			</div>
-			<div class="submit">Create</div>
+			<div class="submit">创建</div>
 		</form>		
 	</div>
 	<script>
@@ -27,15 +27,15 @@
 				dataType: 'json',
 				success: function (data) {
 				    if(data.code==200) {
-					    fade('Successful')
+					    fade('创建成功')
 					    console.log(data)
 				    } else {
 						$('input').val('')
-					    fade('Failed')
+					    fade('建立失败')
 				    }
 				},
 				error: function () {
-					fade('Error')
+					fade('异常')
 				}
 			})
 		})		

@@ -1,20 +1,20 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<h1 style="text-align: center;">Open a channel</h1>
+	<h1 style="text-align: center;">申请建立支付通道</h1>
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
-				<label>Partner Stellar Address：</label> 
+				<label>输入对方Stellar地址：</label> 
 				<input type="text" name="stellar_address">
 			</div>
 			<div>
-				<label>Partner IP Address：</label> 
+				<label>输入对方Ip地址：</label> 
 				<input type="text" name="ip_address">
 			</div>
 			<div>
-				<label>Amount：<span style="color:gray;font-size:10px">（Current balance:<%= balance %>）</span></label>
+				<label>输入存入通道金额：<span style="color:gray;font-size:10px">（当前账下余额:<%= balance %>）</span></label>
 				<input type="text" name="amount">
 			</div>
-			<div class="submit">Open</div>
+			<div class="submit">申请</div>
 		</form>		
 	</div>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -32,7 +32,7 @@
 		$('.submit').click(()=>{
 			socket.emit('send', { text : '1'});
 			if ($('input[name=stellar_address]').val().trim() == '' || $('input[name=ip_address]').val().trim() == '' || $('input[name=amount]').val().trim() == '' ) {
-				fade('Please input Stellar Address, IP Address or Amount')
+				fade('请输入stellar地址或ip地址或金额')
 			} else {
 				console.log($('.form').serialize())
 				$.ajax({
@@ -43,15 +43,15 @@
 					dataType: 'json',
 					success: function (data) {
 					    if(data.code==200) {
-						    fade('Application Sent')
+						    fade('建立申请已发送')
 						    window.location.href="/lobby"
 					    } else {
 							$('input').val('')
-						    fade('Application Failed')
+						    fade('建立失败')
 					    }
 					},
 					error: function () {
-						fade('Error')
+						fade('异常')
 					}
 				})			
 			}

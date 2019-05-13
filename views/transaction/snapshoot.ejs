@@ -1,8 +1,8 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<h1 style="text-align: center;">Exchange Snapshot</h1>
+	<h1 style="text-align: center;">交换快照</h1>
 	<div class="container">
 		<form class="form create" method="post ">
-			<div class="submit">Exchange</div>
+			<div class="submit">交换</div>
 		</form>		
 	</div>
 	<script>
@@ -20,15 +20,15 @@
 				dataType: 'json',
 				success: function (data) {
 				    if(data.code==200) {
-					    fade('Exchange Successful')
+					    fade('交换申请成功')
 					    console.log(data)
 				    } else {
 						$('input').val('')
-					    fade('Channel failed')
+					    fade('建立失败')
 				    }
 				},
 				error: function () {
-					fade('Error')
+					fade('异常')
 				}
 			})
 		})		

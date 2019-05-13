@@ -2,14 +2,14 @@
 	<div class="container">
 		<form class="form create" method="post">
 			<div>
-				<label>Username：</label>
-				<input placeholder="Input Username" type="text" name="name" value="alice" readonly="readonly">
+				<label>用户名：</label>
+				<input placeholder="请输入用户名" type="text" name="name" value="alice" readonly="readonly">
 			</div>
 			<div>
-				<label>Password：</label>
-				<input placeholder="Input password" class="password" type="password" name="password">
+				<label>密码：</label>
+				<input placeholder="请输入密码" class="password" type="password" name="password">
 			</div>
-			<div class="submit">Register</div>
+			<div class="submit">注册</div>
 		</form>
 	</div>
 	<script>
@@ -20,9 +20,9 @@
 		})
 		$('.submit').click(()=>{
 			if ($('input[name=name]').val().trim() == '') {
-				fade('Input Username！')
+				fade('请输入用户名！')
 			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
-				fade('Input valid username please！')
+				fade('请输入合法字符！')
 			} else {
 				$.ajax({
 					url: "/register",
@@ -34,11 +34,11 @@
 					cache: false,
 					dataType: 'json',
 					success: function (data) {
-					   if (data.message == 'User exists') {
+					   if (data.message == '用户存在') {
 						   $('input').val('')
-						   fade('username exists')
-					   } else if(data.message == 'register successful') {
-							fade('register successful')
+						   fade('用户名存在')
+					   } else if(data.message == '注册成功') {
+							fade('注册成功')
 							setTimeout(()=>{
 								window.location.href="/login"	  
 							},1000)
@@ -47,7 +47,7 @@
 					   	}
 					},
 					error: function () {
-						fade('Error')
+						fade('异常')
 					}
 				})			
 			}

@@ -1,4 +1,4 @@
-// import
+//引入模块
 const checkNotLogin = require('../components/checkLogin.js').checkNotLogin;
 const checkLogin = require('../components/checkLogin.js').checkLogin;
 const fs = require('fs')
@@ -7,8 +7,7 @@ const bigInt = require('big-integer')
 const StellarSdk = require('stellar-sdk');
 StellarSdk.Network.useTestNetwork();
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
-
-// function definitions
+//定义方法
 exports.getLobby = async ctx => {
 	await ctx.render('transaction/lobby', {
 		session : ctx.session

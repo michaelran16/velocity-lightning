@@ -2,14 +2,14 @@
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
-				<label>User name：</label>
-				<input placeholder="Username" type="text" name="name" value="alice" readonly="readonly">
+				<label>用户名：</label> 
+				<input placeholder="用户名" type="text" name="name" value="alice" readonly="readonly">
 			</div>
 			<div>
-				<label>Password：</label> 
-				<input placeholder="Password" type="password" name="password">
+				<label>密码：</label> 
+				<input placeholder="密码" type="password" name="password">
 			</div>
-			<div class="submit">Log In</div>
+			<div class="submit">登录</div>
 		</form>		
 	</div>
 	<script>
@@ -20,7 +20,7 @@
 		})
 		$('.submit').click(()=>{
 			if ($('input[name=name]').val().trim() == '' || $('input[name=password]').val().trim() == '' ) {
-				fade('Input User name or Password')
+				fade('请输入用户名或密码')
 			} else {
 				console.log($('.form').serialize())
 				$.ajax({
@@ -31,17 +31,17 @@
 					dataType: 'json',
 					success: function (data) {
 					    if(data.code==200) {
-						    fade('Login Success')
+						    fade('登录成功')
 						    setTimeout(()=>{
 							    window.location.href = "/lobby"
 						    },1500)	               	
 					    } else {
 							$('input').val('')
-						    fade('Username or Password Failed')
+						    fade('用户名或密码错误')
 					    }
 					},
 					error: function () {
-						fade('Error')
+						fade('异常')
 					}
 				})			
 			}

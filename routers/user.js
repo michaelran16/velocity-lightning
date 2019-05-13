@@ -1,19 +1,15 @@
-// import
+//引入模块
 const router = require('koa-router')()
 const controllers = require('../controllers/user')
-
-// registration page
+//注册页面
 router.get('/register', controllers.getRegister)
-
-// login page
-router.get('/', controllers.getLogin)
-router.get('/login', controllers.getLogin)
-
-// log out
-router.get('/logout', controllers.getLogout)
-
-//post register and login
+//post注册
 router.post('/register', controllers.postRegister)
+//登录页面
+router.get('/login', controllers.getLogin)
+router.get('/', controllers.getLogin)
+//退出
+router.get('/logout', controllers.getLogout)
+//post登录
 router.post('/login', controllers.postLogin)
-
 module.exports = router

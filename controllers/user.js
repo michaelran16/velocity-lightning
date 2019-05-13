@@ -1,4 +1,4 @@
-// import
+//引入模块
 const md5 = require('md5');
 const fs = require('fs');
 const checkNotLogin = require('../components/checkLogin.js').checkNotLogin;
@@ -7,8 +7,7 @@ const fetch = require('node-fetch');
 const StellarSdk = require('stellar-sdk');
 StellarSdk.Network.useTestNetwork();
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
-
-// function definitions
+//定义方法
 exports.getRegister = async ctx => {
 	await checkNotLogin(ctx);
 	await ctx.render('user/register', {
