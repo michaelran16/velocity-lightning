@@ -14,7 +14,7 @@ const socket = require('socket.io')
 const app = new koa()
 app.keys = ['secret'];
 const sessionConfig = {
-	key : "alice",
+	key : "test",
 	httpOnly : false,
 }
 app.use(session(sessionConfig, app));
@@ -23,7 +23,7 @@ app.use(koaStatic(
 	path.join(__dirname, './static')
 ))
 //缓存配置
-app.use(staticCache(path.join(__dirname, './static/css'), {dynamic:true}, {
+app.use(staticCache(path.join(__dirname, './static'), {dynamic:true}, {
 	maxAge : 365*24*60*60
 }))
 //模板渲染中间件配置
@@ -35,7 +35,7 @@ app.use(bodyParser({
 }))
 //路由配置
 app.use(require('./routers/user.js').routes())
-app.use(require('./routers/transaction.js').routes())
+app.use(require('./routers/channel.js').routes())
 //监听端口
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)

@@ -1,0 +1,44 @@
+<%- include("../layouts/head",{type:'channel'}) %>
+	<h1 style="text-align: center;">
+		通道列表
+	</h1>
+	<div class="container">
+		<ul class="posts">
+			<li>
+				<a href="123">
+					<div class="title">
+						测试通道1
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div style="margin-top: 30px" class="pagination" id="page"></div>	
+	</div>
+	<script src="/js/pagination.js"></script>
+	<script>
+		pagination({
+			selector: '#page',
+			totalPage: 1,
+			currentPage: 1,
+			prev: '上一页',
+			next: '下一页',
+			first: true,
+			last: true,
+			showTotalPage: true,
+			count: 2//当前页前后显示的数量
+		}, function(val) {
+			// 当前页
+			$.ajax({
+				url : "list",
+				type : 'POST',
+				data : {
+					page : val
+				},
+				cache : false,
+				success: function (data) {
+
+				}
+			})
+		})
+	</script>
+<% include ../layouts/foot %>

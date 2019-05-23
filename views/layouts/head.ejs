@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>alice</title>
-	<link rel="stylesheet" href="/index.css">
+	<title>test</title>
+	<link rel="stylesheet" href="/css/index.css">
 	<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 	<script>
 		function fade(txt){
@@ -55,10 +55,15 @@
 		<div class="user_right">
 			<%  if (session.name) { %>
 				<div class="has_user">
-					<% if (type == 'lobby') { %>
-						<a class="active" href="/lobby">大厅</a>
+					<% if (type == 'channel') { %>
+						<a class="active" href="/channel">支付通道</a>
 					<% } else { %>
-						<a href="/lobby">大厅</a>
+						<a href="/channel">支付通道</a>
+					<% } %>
+					<% if (type == 'message') { %>
+						<a class="active" href="/message">我的消息</a>
+					<% } else { %>
+						<a href="/message">我的消息</a>
 					<% } %>
 					<span class="logout">退出</span>
 				</div>

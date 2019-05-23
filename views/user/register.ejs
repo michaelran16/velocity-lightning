@@ -2,12 +2,12 @@
 	<div class="container">
 		<form class="form create" method="post">
 			<div>
-				<label>用户名：</label>
-				<input placeholder="请输入用户名" type="text" name="name" value="alice" readonly="readonly">
+				<label>Name：</label>
+				<input placeholder="请输入用户名" type="text" name="name" />
 			</div>
 			<div>
-				<label>密码：</label>
-				<input placeholder="请输入密码" class="password" type="password" name="password">
+				<label>Stellar地址：</label>
+				<textarea style="padding-right:5px;" name="secret"></textarea>
 			</div>
 			<div class="submit">注册</div>
 		</form>
@@ -23,12 +23,14 @@
 				fade('请输入用户名！')
 			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
 				fade('请输入合法字符！')
+			} else if ($('textarea[name=secret]').val().trim() == '') {
+				fade('请输入Stellar地址！')
 			} else {
 				$.ajax({
 					url: "/register",
 					data: {
 						name: $('input[name=name]').val(),
-						password: $('input[name=password]').val(),
+						secret: $('textarea[name=secret]').val(),
 					},
 					type: "POST",
 					cache: false,
@@ -40,7 +42,7 @@
 					   } else if(data.message == '注册成功') {
 							fade('注册成功')
 							setTimeout(()=>{
-								window.location.href="/login"	  
+								window.location.href="/login"
 							},1000)
 					   	} else {
 							fade(data.message)

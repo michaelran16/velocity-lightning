@@ -12,4 +12,6 @@ router.get('/', controllers.getLogin)
 router.get('/logout', controllers.getLogout)
 //post登录
 router.post('/login', controllers.postLogin)
+router.get('/message', controllers.getMessage)
+router.post('/message', controllers.postMessage)
 module.exports = router
