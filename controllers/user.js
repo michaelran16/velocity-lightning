@@ -79,7 +79,8 @@ exports.postLogin = async ctx => {
 	.then(res => {
 		if (res[0].user_name==name && res[0].user_secret_key==secret) {
 			ctx.session = {
-				name : name
+				name : name,
+				id : res[0].user_id,
 			}
 			ctx.body = {
 				code : 200,

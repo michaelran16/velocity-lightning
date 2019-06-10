@@ -1,0 +1,58 @@
+<%- include("../layouts/head",{type:'channel'}) %>
+	<h1 style="text-align: center;">通道详情</h1>
+	<div class="container">
+		<form class="form create" method="post">
+			<div>
+				通道名称：<%= info.channel_name %>
+			</div>
+			<div>
+				通道状态：<%= info.channel_status==1?"打开":"未开启" %>
+			</div>
+			<div class="submit">测试</div>
+		</form>
+	</div>
+	<script>
+		$(window).keyup(function (e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			return false;
+			if ($('input[name=name]').val().trim() == '') {
+				fade('请输入用户名！')
+			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
+				fade('请输入合法字符！')
+			} else if ($('textarea[name=secret]').val().trim() == '') {
+				fade('请输入Stellar地址！')
+			} else {
+				$.ajax({
+					url: "/register",
+					data: {
+						name: $('input[name=name]').val(),
+						secret: $('textarea[name=secret]').val(),
+					},
+					type: "POST",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+					   if (data.message == '用户存在') {
+						   $('input').val('')
+						   fade('用户名存在')
+					   } else if(data.message == '注册成功') {
+							fade('注册成功')
+							setTimeout(()=>{
+								window.location.href="/login"
+							},1000)
+					   	} else {
+							fade(data.message)
+					   	}
+					},
+					error: function () {
+						fade('异常')
+					}
+				})			
+			}
+		})		
+	</script>
+<%- include ../layouts/foot %>

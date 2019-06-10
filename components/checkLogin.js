@@ -2,7 +2,7 @@ module.exports = {
 	//已经登录
 	checkNotLogin : (ctx) => {
 		if (ctx.session && ctx.session.name) {
-			ctx.redirect('/lobby')
+			ctx.redirect('/channel-list')
 			return false;
 		}
 		return true;
