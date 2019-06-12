@@ -26,8 +26,8 @@
 		$('.submit').click(()=>{
 			if ($('input[name=channel_name]').val().trim() == '') {
 				fade('请输入通道名称')
-			} else if ($('input[name=amount]').val().trim() == '') {
-				fade('请输入存入数量')
+			} else if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()>0) {
+				fade('请输入存入数量,并且为正整数')
 			} else if ($('input[name=user_name]').val().trim() == '') {
 				fade('请输入对方名称')
 			} else {

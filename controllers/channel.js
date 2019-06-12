@@ -84,21 +84,68 @@ exports.getChannel_create = async ctx => {
 
 exports.postChannel_create = async ctx => {
 	let {channel_name, amount, user_name} = ctx.request.body;
+	let myData;
+
+	await userModel.findDataById([ctx.session.id])
+	.then(async (res) => {
+		myData = res[0]
+	}).catch(err => {
+		console.log(err)
+	})
 
 	await userModel.findDataByName([user_name])
 	.then( async (res) => {
+
 		if (res.length && res[0].user_status==1) {
-			ctx.body = {
-				code : 200,
-				message : '申请成功'
+
+			let myKeyPair = Keypair.fromSecret(myData.user_secret_key)
+			var sponsor = await server.loadAccount(myKeyPair.publicKey())
+
+			if (parseFloat(sponsor.balances[0].balance) > (parseFloat(amount)+3)) {
+
+				let sponsor_version = Keypair.random()
+				let sponsor_ratchet = Keypair.random()
+				let receive_version = Keypair.random()
+				let receive_ratchet = Keypair.random()
+
+				const setupAccountsTx = new TransactionBuilder(sponsor, {fee: 100}).addOperation(
+					Operation.createAccount({
+						destination: sponsor_version.publicKey(),
+						startingBalance: '1',
+					})
+				).addOperation(
+					Operation.createAccount({
+						destination: receive_version.publicKey(),
+						startingBalance: '1',
+					})
+				).addOperation(
+					Operation.createAccount({
+						destination: receive_ratchet.publicKey(),
+						startingBalance: '1',
+					})
+				)
+				.setTimeout(1000)
+				.build()
+				setupAccountsTx.sign(myKeyPair)
+				await server.submitTransaction(setupAccountsTx)
+
+				ctx.body = {
+					code : 200,
+					message : '申请成功'
+				}
+			} else {
+				ctx.body = {
+					code : 500,
+					message : '余额不足'
+				}
+				return false;
 			}
 		} else {
 			ctx.body = {
 				code : 500,
-				message : '对方名称输入错误'
+				message : '对方异常或不存在，请重新输入'
 			}
 		}
-		console.log(res)
 	}).catch(err => {
 		console.log(err)
 	})
