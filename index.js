@@ -40,46 +40,47 @@ app.use(require('./routers/channel.js').routes())
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)
 let io = socket(server);
-users = [];
-let kit = {
-	//判断用户是否存在
-	isHaveUser(user) {
-		var flag = false;
-		users.forEach(function (item) {
-			if (item.name == user.name) {
-				flag = true;
-			}
-		})
-		return flag;
-	},
-	//删除某一用户
-	delUser(id) {
-		users.forEach(function (item, index) {
-			if (item.id == id) {
-				users.splice(index, 1);
-			}
-		})
+
+function del_arr(arr,num) {
+	for(i in arr){
+		if(arr[i]==num){
+			delete(arr[i]);
+		}
+	}
+	return arr;
+}
+
+function query_arr(arr,num) {
+	for(i in arr){
+		if(arr[i]==num){
+			return i;
+		}
 	}
 }
+arr = [];
+
 io.on('connection', function (socket) {
-	socket.on('login', (user) => {
-		if (kit.isHaveUser) {
-      		socket.emit('loginFail', "登录失败,昵称已存在!");
-		} else {
-			socket.user = user;
-			user.id = socket.id;
-			user.address = socket.handshake.address;
-			users.push(user)
-			socket.broadcast.emit('system', user, 'join');
-		}
-	})
-	socket.on('disconnect',()=> {
-		if (socket.user != null) {
-			kit.delUser(socket.id);
-			socket.broadcast.emit('system', socket.user, 'logout');
-		}
+
+	var _data = { "type": "init" };
+	socket.emit('message',_data);
+
+	socket.on('message', function(data) {
+		
+		var data = JSON.parse(data);
+
+		switch(data.type){
+
+			case "bind":
+				arr[data.fromid] = socket.id;
+				break;
+
+			case "text":
+				var _data = {"type":"text", "data":""+data.data+"", "toid":""+data.toid+"", "fromid":""+data.fromid+""};
+				io.to(arr[data.toid]).emit('message',_data);
+				socket.emit('message',_data);
+        		break;
+	}
+	socket.on('disconnect', function() {
+		del_arr(arr,socket.id);
 	});
-    socket.on('message', function (id, msg, from) {
-        socket.broadcast.emit('message', { text:data.text});
-    });
 });

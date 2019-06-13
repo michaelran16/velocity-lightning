@@ -17,7 +17,35 @@
 			<div class="submit">发起申请</div>
 		</form>		
 	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 	<script>
+		var socket = io.connect('http://127.0.0.1:7000',{
+            reconnection:true,//自动连接
+            reconnectionAttempts:5,
+            reconnectionDelay:10000,//连接之初等待时间
+        });
+        socket.on('reconnect_error', function(data) {
+            location.reload()
+        });
+        socket.on('connect_failed', function(data) {
+            location.reload()
+        });
+        socket.on('error', function(data) {
+            location.reload()
+        });
+        socket.on('message', function(data){
+        	switch (data.type){
+        		case "init":
+        			var bild = '{"type":"bind","fromid":"'+fromid+'","toid":"'+toid+'"}';
+					socket.emit('message', bild);
+					break;
+				case "text":
+					if (toid==data.fromid) {
+						
+					}
+					break;
+        })
 		$(window).keyup(function(e) {
 			if (e.keyCode == 13) {
 				$('.submit').click()
