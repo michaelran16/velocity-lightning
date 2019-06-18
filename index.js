@@ -36,33 +36,35 @@ app.use(bodyParser({
 //路由配置
 app.use(require('./routers/user.js').routes())
 app.use(require('./routers/channel.js').routes())
+app.use(require('./routers/message.js').routes())
 //监听端口
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)
 let io = socket(server);
 
-function del_arr(arr,num) {
-	for(i in arr){
-		if(arr[i]==num){
+function del_arr(arr, num) {
+	for (i in arr) {
+		if (arr[i]==num) {
 			delete(arr[i]);
 		}
 	}
 	return arr;
 }
 
-function query_arr(arr,num) {
-	for(i in arr){
-		if(arr[i]==num){
+function query_arr(arr, num) {
+	for (i in arr) {
+		if (arr[i]==num) {
 			return i;
 		}
 	}
 }
+
 arr = [];
 
 io.on('connection', function (socket) {
 
-	var _data = { "type": "init" };
-	socket.emit('message',_data);
+	var _data = '{ "type" : "init" }';
+	socket.emit('message', _data);
 
 	socket.on('message', function(data) {
 		
@@ -75,12 +77,14 @@ io.on('connection', function (socket) {
 				break;
 
 			case "text":
-				var _data = {"type":"text", "data":""+data.data+"", "toid":""+data.toid+"", "fromid":""+data.fromid+""};
-				io.to(arr[data.toid]).emit('message',_data);
-				socket.emit('message',_data);
+				var _data = '{ "type" : "text", "data" : "'+data.content+'", "toid" : "'+data.toid+'", "fromid" : "'+data.fromid+'" }';
+				io.to(arr[data.toid]).emit('message', _data);
+				socket.emit('message', _data);
         		break;
-	}
+        }
+	})
+	
 	socket.on('disconnect', function() {
-		del_arr(arr,socket.id);
+		del_arr(arr, socket.id);
 	});
-});
+})

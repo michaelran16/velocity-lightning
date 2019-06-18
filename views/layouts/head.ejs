@@ -9,7 +9,41 @@
 	<link rel="stylesheet" href="/css/index.css">
 
 	<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+	
 	<script>
+		"<%  if (session.name) { %>"
+			var socket = io.connect('http://127.0.0.1:8000',{
+				reconnection:true,
+				reconnectionAttempts:5,
+				reconnectionDelay:10000,
+			});
+			socket.on('reconnect_error', function(data) {
+				location.reload()
+			});
+			socket.on('connect_failed', function(data) {
+				location.reload()
+			});
+			socket.on('error', function(data) {
+				location.reload()
+			});
+			socket.on('message', function(data){
+				var data = JSON.parse(data);
+				switch (data.type){
+					case "init":
+						var bild = '{"type":"bind","fromid":<%= session.id %>}';
+						socket.emit('message', bild);
+						break;
+					case "text":
+						if (data.toid=="<%= session.id %>") {
+							$("#message").css("display", "inline-block");
+						}
+						break;
+				}
+			})
+		"<% } %>"
+
 		function fade(txt){
 			$('.message').text(txt)
 			$('.message').animate({
@@ -21,6 +55,7 @@
 				})
 			},1500)
 		}
+
 		$(function(){
 			$('.logout').click(()=>{
 				$.ajax({
@@ -70,9 +105,18 @@
 						<a href="/channel-list">支付通道</a>
 					<% } %>
 					<% if (type == 'message') { %>
-						<a class="active" href="/message">我的消息</a>
+						<a class="active" href="/message-list">我的消息</a>
 					<% } else { %>
-						<a href="/message">我的消息</a>
+						<a href="/message-list" style="display: inline-block;">我的消息
+							<i id="message" style="
+								display: none;
+								background: rgb(255, 0, 0);
+								border-radius: 50%;
+								width: 10px;
+								height: 10px;
+							">
+							</i>
+						</a>
 					<% } %>
 					<span class="logout">退出</span>
 				</div>

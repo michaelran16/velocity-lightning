@@ -22,10 +22,11 @@ Network.useTestNetwork();
 const server = new Server("https://horizon-testnet.stellar.org");
 
 exports.getChannel_list = async ctx => {
+	
+	await checkLogin(ctx);
+
 	let list,
 		count;
-
-	await checkLogin(ctx);
 
 	await channelModel.findDataCountById([ctx.session.id])
 	.then(async (res) => {
@@ -58,6 +59,9 @@ exports.postChannel_list = async ctx => {
 }
 
 exports.getChannel_details = async ctx => {
+
+	await checkLogin(ctx);
+
 	let info
 	await channelModel.findDataById([ctx.params.id])
 	.then(res => {
@@ -77,6 +81,9 @@ exports.postChannel_details = async ctx => {
 }
 
 exports.getChannel_create = async ctx => {
+
+	await checkLogin(ctx);
+
 	await ctx.render('channel/channel-create', {
 		session : ctx.session,
 	})
@@ -95,7 +102,13 @@ exports.postChannel_create = async ctx => {
 
 	await userModel.findDataByName([user_name])
 	.then( async (res) => {
-
+		if (ctx.session.id==res[0].user_id) {
+			ctx.body = {
+				code : 500,
+				message : '不能和自己开通道',
+			}
+			return false;
+		}
 		if (res.length && res[0].user_status==1) {
 
 			let myKeyPair = Keypair.fromSecret(myData.user_secret_key)
@@ -129,9 +142,12 @@ exports.postChannel_create = async ctx => {
 				setupAccountsTx.sign(myKeyPair)
 				await server.submitTransaction(setupAccountsTx)
 
+				
+
 				ctx.body = {
 					code : 200,
-					message : '申请成功'
+					message : '申请成功',
+					toid : res[0].user_id,
 				}
 			} else {
 				ctx.body = {

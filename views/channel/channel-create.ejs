@@ -17,35 +17,7 @@
 			<div class="submit">发起申请</div>
 		</form>		
 	</div>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 	<script>
-		var socket = io.connect('http://127.0.0.1:7000',{
-            reconnection:true,//自动连接
-            reconnectionAttempts:5,
-            reconnectionDelay:10000,//连接之初等待时间
-        });
-        socket.on('reconnect_error', function(data) {
-            location.reload()
-        });
-        socket.on('connect_failed', function(data) {
-            location.reload()
-        });
-        socket.on('error', function(data) {
-            location.reload()
-        });
-        socket.on('message', function(data){
-        	switch (data.type){
-        		case "init":
-        			var bild = '{"type":"bind","fromid":"'+fromid+'","toid":"'+toid+'"}';
-					socket.emit('message', bild);
-					break;
-				case "text":
-					if (toid==data.fromid) {
-						
-					}
-					break;
-        })
 		$(window).keyup(function(e) {
 			if (e.keyCode == 13) {
 				$('.submit').click()
@@ -54,12 +26,11 @@
 		$('.submit').click(()=>{
 			if ($('input[name=channel_name]').val().trim() == '') {
 				fade('请输入通道名称')
-			} else if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()>0) {
+			} else if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()<1) {
 				fade('请输入存入数量,并且为正整数')
 			} else if ($('input[name=user_name]').val().trim() == '') {
 				fade('请输入对方名称')
 			} else {
-				console.log($('.form').serialize())
 				$.ajax({
 					url: "/channel-create",
 					data: $('.form').serialize(),
@@ -68,6 +39,9 @@
 					dataType: 'json',
 					success: function (data) {
 					    if(data.code==200) {
+							var fromid = "<%= session.id %>";
+							var _data = '{"type":"text","fromid":"'+fromid+'","toid":"'+data.toid+'"}';
+							socket.emit('message', _data);
 						    fade('申请成功，等待对方操作')
 					    } else {
 						    fade(data.message)
