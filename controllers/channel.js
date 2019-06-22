@@ -189,22 +189,50 @@ exports.postChannel_create = async ctx => {
 }
 
 exports.getChannel_invite_create = async ctx => {
-	let messageData;
+	let messageData,
+		channelData,
+		toUserData;
 	await messageModel.findDataById([ctx.params.id])
 	.then(res => {
 		messageData = res[0];
 	}).catch(err => {
 		console.log(err)
 	})
-	await channelModel.findDataById([messageData.channel_id])
+	await channelModel.findDataById([messageData.message_channel_id])
 	.then(res => {
-		
+		channelData = res[0]
+	})
+	if (channelData.channel_status<3) {
+		ctx.redirect('/channel-details/'+channelData.channel_id)
+		return false;
+	}
+	await userModel.findDataById([channelData.channel_sponsor_id])
+	.then(res => {
+		toUserData = res[0]
+	}).catch(err => {
+		console.log(err)
 	})
 	await ctx.render('channel/channel-invite-create', {
 		session : ctx.session,
+		messageData : messageData,
+		channelData : channelData,
+		toUserData : toUserData,
 	});
 }
 
 exports.postChannel_invite_create = async ctx => {
-	
+	let channel_id = ctx.params.id;
+	let amount = ctx.request.body.amount;
+
+	await channelModel.updateStatusReceiveDepositById([1, amount, channel_id])
+	.then(res => {
+		console.log(res)
+	}).catch(err => {
+		console.log(err)
+	})
+
+	ctx.body = {
+		code : 200,
+		message : "操作成功",
+	}
 }

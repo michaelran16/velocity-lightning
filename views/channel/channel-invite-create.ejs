@@ -1,0 +1,52 @@
+<%- include("../layouts/head",{type:'channel'}) %>
+	<h1 style="text-align: center;">邀请创建通道</h1>
+	<div class="container">
+		<form class="form create" method="post ">
+			<div>
+				<label>通道名称：<%= channelData.channel_name %></label>
+			</div>
+			<div>
+				<label>存入数量：</label>
+                <input placeholder="请输入存入数量" type="text" name="amount" />
+            </div>
+            <div>
+				<label>对方存入数量：<%= channelData.channel_sponsor_deposit %></label>
+			</div>
+			<div>
+				<label>对方名称：<%= toUserData.user_name %></label>
+			</div>
+			<div class="submit">确定</div>
+		</form>		
+	</div>
+	<script>
+		$(window).keyup(function(e) {
+			if (e.keyCode == 13) {
+				$('.submit').click()
+			}
+		})
+		$('.submit').click(()=>{
+			if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()<1) {
+				fade('请输入存入数量,并且为正整数')
+			} else {
+				$.ajax({
+					url: "/channel-invite-create/<%= channelData.channel_id %>",
+					data: $('.form').serialize(),
+					type: "POST",
+					cache: false,
+					dataType: 'json',
+					success: function (data) {
+					    if(data.code==200) {
+							fade('成功')
+							window.location.href = "/channel-details/<%= channelData.channel_id %>"
+					    } else {
+						    fade(data.message)
+					    }
+					},
+					error: function () {
+						fade('异常')
+					}
+				})			
+			}
+		})		
+	</script>
+<% include ../layouts/foot %>

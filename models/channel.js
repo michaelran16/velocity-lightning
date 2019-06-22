@@ -34,7 +34,7 @@ let insertData = function(value) {
 	let sql = "insert into channels(channel_name, channel_sponsor_id, channel_receive_id, channel_add_time, channel_status,"+
 	" channel_sponsor_amount, channel_receive_amount, channel_sponsor_version_pubkey, channel_sponsor_version_secret_key,"+
 	" channel_sponsor_ratchet_pubkey, channel_sponsor_ratchet_secret_key, channel_receive_version_pubkey, channel_receive_version_secret_key,"+
-	" channel_receive_ratchet_pubkey, channel_receive_ratchet_secret_key, channel_receive_deposit, channel_sponsor_deposit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	" channel_receive_ratchet_pubkey, channel_receive_ratchet_secret_key, channel_sponsor_deposit, channel_receive_deposit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }
 
@@ -56,9 +56,15 @@ let listData = function(value) {
 	return query(sql)
 }
 
+let updateStatusReceiveDepositById = function(value) {
+	let sql = `update channels set channel_status = ${value[0]}, channel_receive_deposit = ${value[1]} where channel_id = ${value[2]}`
+	return query(sql)
+}
+
 module.exports = {
 	insertData,
 	findDataById,
 	findDataCountById,
 	listData,
+	updateStatusReceiveDepositById,
 }
