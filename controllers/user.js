@@ -1,4 +1,4 @@
-//引入模块
+// 引入模块
 const md5 = require('md5');
 const userModel = require('../models/user.js');
 const fs = require('fs');
@@ -20,7 +20,7 @@ Network.useTestNetwork();
 
 const server = new Server("https://horizon-testnet.stellar.org");
 
-//定义方法
+// 定义方法
 exports.getRegister = async ctx => {
 	await checkNotLogin(ctx);
 	await ctx.render('user/register', {
@@ -103,10 +103,4 @@ exports.getLogout = async ctx => {
 		code : 200,
 		message : '退出成功'
 	}
-}
-exports.getMessage = async ctx => {
-
-}
-exports.postMessage = async ctx => {
-
 }

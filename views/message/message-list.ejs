@@ -6,16 +6,27 @@
 		<ul class="posts">
 			<% list.forEach (function(res) { %>
 				<li>
-					<a href="/channel-details/<%= res.channel_id %>">
+					<a href="/message-details/<%= res.message_id %>">
 						<div class="title">
-							<%= res.channel_name %>
-							<span style="height: 26px;background: <%= res.channel_status==1?"#5FB878":"red" %>;width: 26px;border-radius: 50%;"></span>
+							<%
+								switch (res.message_type) {
+									case 0 :
+										var type = "邀请创建通道";
+										break;
+									default:
+										var type = "异常";
+								}
+							%>
+							<%= type %>
+							<span style="height: 26px;background: <%= res.message_is_read==1?"#5FB878":"red" %>;width: 26px;border-radius: 50%;"></span>
 						</div>
+						<span>来自：<%= res.message_from_user_name %></span>
+						<span>时间：<%= res.message_add_time %></span>
 					</a>
 				</li>
 			<% }) %>
 		</ul>
-		<div style="margin-top: 30px" class="pagination" id="page"></div>	
+		<div style="margin-top: 30px" class="pagination" id="page"></div>
 	</div>
 	<script src="/js/pagination.js"></script>
 	<script>
@@ -31,7 +42,7 @@
 			count: 2//当前页前后显示的数量
 		}, function(val) {
 			$.ajax({
-				url : "channel-list",
+				url : "message-list",
 				type : 'POST',
 				data : {
 					page : val
@@ -41,16 +52,26 @@
 					if (data != 'error') {
 						$('.posts').html(' ')
 						$.each(data,function(i,val){
-							var status = '<span style="height: 26px;background: ' 
-							status += val.channel_status==1?"#5FB878":"red"
+							var type,
+								status;
+							status = '<span style="height: 26px;background: ' 
+							status += val.message_is_read==1?"#5FB878":"red"
 							status += ';width: 26px;border-radius: 50%;"></span>';
-							console.log(status)
+							switch (val.message_type) {
+								case 0:
+									type = "邀请创建通道";
+									break;
+								default:
+									type = "异常";
+							}
 							$('.posts').append(
 								'<li>'+
-									'<a href="/channel-details/'+ val.channel_id +'">'+
+									'<a href="/message-details/'+ val.message_id +'">'+
 										'<div class="title">'+
-											val.channel_name + status +
+											type + status +
 										'</div>'+
+										'<span>来自：'+ val.message_from_user_name +'</span>'+
+										'<span>时间：'+ val.message_add_time +'</span>'+
 									'</a>'+
 								'</li>'
 							)

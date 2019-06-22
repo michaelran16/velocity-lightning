@@ -1,12 +1,13 @@
-//引入模块
+// 引入模块
 const md5 = require('md5');
 const channelModel = require('../models/channel.js');
-const userModel = require('../models/user.js')
+const userModel = require('../models/user.js');
+const messageModel = require('../models/message.js');
 const fs = require('fs');
 const checkNotLogin = require('../components/checkLogin.js').checkNotLogin;
 const checkLogin = require('../components/checkLogin.js').checkLogin;
 const fetch = require('node-fetch');
-const moment = require('moment')
+const moment = require('moment');
 
 const {
 	Account,
@@ -62,14 +63,15 @@ exports.getChannel_details = async ctx => {
 
 	await checkLogin(ctx);
 
-	let info
+	let info;
+
 	await channelModel.findDataById([ctx.params.id])
 	.then(res => {
 		info = res[0]
 	}).catch(err => {
 		console.log(err)
 	})
-	console.log(info)
+	
 	await ctx.render('channel/channel-details', {
 		session : ctx.session,
 		info : info,
@@ -91,7 +93,9 @@ exports.getChannel_create = async ctx => {
 
 exports.postChannel_create = async ctx => {
 	let {channel_name, amount, user_name} = ctx.request.body;
-	let myData;
+	let myData,
+		toData,
+		channel_id;
 
 	await userModel.findDataById([ctx.session.id])
 	.then(async (res) => {
@@ -102,14 +106,18 @@ exports.postChannel_create = async ctx => {
 
 	await userModel.findDataByName([user_name])
 	.then( async (res) => {
-		if (ctx.session.id==res[0].user_id) {
-			ctx.body = {
-				code : 500,
-				message : '不能和自己开通道',
-			}
-			return false;
-		}
+
 		if (res.length && res[0].user_status==1) {
+
+			if (ctx.session.id==res[0].user_id) {
+				ctx.body = {
+					code : 500,
+					message : '不能和自己开通道',
+				}
+				return false;
+			} else {
+				toData = res[0]
+			}
 
 			let myKeyPair = Keypair.fromSecret(myData.user_secret_key)
 			var sponsor = await server.loadAccount(myKeyPair.publicKey())
@@ -141,14 +149,27 @@ exports.postChannel_create = async ctx => {
 				.build()
 				setupAccountsTx.sign(myKeyPair)
 				await server.submitTransaction(setupAccountsTx)
-
 				
+				await channelModel.insertData([
+					channel_name, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 3, amount, 0, 
+					sponsor_version.publicKey(), sponsor_version.secret(), sponsor_ratchet.publicKey(), sponsor_ratchet.secret(), receive_version.publicKey(), 
+					receive_version.secret(), receive_ratchet.publicKey(), receive_ratchet.secret(), amount, 0
+				])
+				.then(res => {
+					channel_id = res.insertId
+				}).catch(err => {
+					console.log(err)
+				})
 
-				ctx.body = {
-					code : 200,
-					message : '申请成功',
-					toid : res[0].user_id,
-				}
+				await messageModel.insertData([channel_id, moment().format('YYYY-MM-DD HH:mm:ss'), 0, "", 0, toData.user_id, myData.user_id, myData.user_name]).then(res => {
+					ctx.body = {
+						code : 200,
+						message : '申请成功',
+						toid : toData.user_id,
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			} else {
 				ctx.body = {
 					code : 500,
@@ -165,4 +186,25 @@ exports.postChannel_create = async ctx => {
 	}).catch(err => {
 		console.log(err)
 	})
+}
+
+exports.getChannel_invite_create = async ctx => {
+	let messageData;
+	await messageModel.findDataById([ctx.params.id])
+	.then(res => {
+		messageData = res[0];
+	}).catch(err => {
+		console.log(err)
+	})
+	await channelModel.findDataById([messageData.channel_id])
+	.then(res => {
+		
+	})
+	await ctx.render('channel/channel-invite-create', {
+		session : ctx.session,
+	});
+}
+
+exports.postChannel_invite_create = async ctx => {
+	
 }
