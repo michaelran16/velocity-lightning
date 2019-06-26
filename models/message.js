@@ -30,7 +30,7 @@ let query = function(sql, values) {
 }
 
 let insertData = function(value) {
-	let sql = "insert into message(message_channel_id, message_add_time, message_type, message_xdr, message_is_read, message_user_id,"+
+	let sql = "insert into message(message_event_id, message_add_time, message_type, message_xdr, message_is_read, message_user_id,"+
 	" message_from_user_id, message_from_user_name) values(?, ?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }

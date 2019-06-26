@@ -37,6 +37,7 @@ app.use(bodyParser({
 app.use(require('./routers/user.js').routes())
 app.use(require('./routers/channel.js').routes())
 app.use(require('./routers/message.js').routes())
+app.use(require('./routers/wallet.js').routes())
 //监听端口
 let server = app.listen(`${config.port}`)
 console.log(`listening on port ${config.port}`)

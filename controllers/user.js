@@ -42,6 +42,15 @@ exports.postRegister = async ctx => {
 		} else {
 			try {
 				var sourceKeys = Keypair.fromSecret(secret);
+				await userModel.insertData([name, sourceKeys.publicKey(), sourceKeys.secret(), moment().format('YYYY-MM-DD HH:mm:ss')])
+				.then(res => {
+					ctx.body = {
+						code : 200,
+						message : '注册成功'
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			} catch (e) {
 				ctx.body = {
 					code : 200,
@@ -49,15 +58,6 @@ exports.postRegister = async ctx => {
 				}
 				return false;
 			}
-			await userModel.insertData([name, sourceKeys.publicKey(), sourceKeys.secret(), moment().format('YYYY-MM-DD HH:mm:ss')])
-			.then(res => {
-				ctx.body = {
-					code : 200,
-					message : '注册成功'
-				}
-			}).catch(err => {
-				console.log(err)
-			})
 		}
 	}).catch(err => {
 		console.log(err)

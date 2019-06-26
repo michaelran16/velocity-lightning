@@ -198,13 +198,15 @@ exports.getChannel_invite_create = async ctx => {
 	}).catch(err => {
 		console.log(err)
 	})
-	await channelModel.findDataById([messageData.message_channel_id])
-	.then(res => {
-		channelData = res[0]
-	})
-	if (channelData.channel_status<3) {
-		ctx.redirect('/channel-details/'+channelData.channel_id)
-		return false;
+	if (messageData.message_type==0) {
+		await channelModel.findDataById([messageData.message_event_id])
+		.then(res => {
+			channelData = res[0]
+		})
+		if (channelData.channel_status<3) {
+			ctx.redirect('/channel-details/'+channelData.channel_id)
+			return false;
+		}
 	}
 	await userModel.findDataById([channelData.channel_sponsor_id])
 	.then(res => {

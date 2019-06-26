@@ -99,6 +99,11 @@
 		<div class="user_right">
 			<%  if (session.name) { %>
 				<div class="has_user">
+					<% if (type == 'wallet') { %>
+						<a class="active" href="/wallet">我的钱包</a>
+					<% } else { %>
+						<a href="/wallet">我的钱包</a>
+					<% } %>
 					<% if (type == 'channel') { %>
 						<a class="active" href="/channel-list">支付通道</a>
 					<% } else { %>
