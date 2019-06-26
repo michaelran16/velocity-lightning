@@ -2,6 +2,8 @@
 const md5 = require('md5');
 const userModel = require('../models/user.js');
 const channelModel = require('../models/channel.js');
+const transactionModel = require('../models/transaction.js');
+const messageModel = require('../models/message.js');
 const fs = require('fs');
 const checkNotLogin = require('../components/checkLogin.js').checkNotLogin;
 const checkLogin = require('../components/checkLogin.js').checkLogin;
@@ -18,7 +20,9 @@ exports.getWallet = async ctx => {
     await checkLogin(ctx);
 
     let channelBySponsorBalance,
-        channelByReceiveBalance;
+        channelByReceiveBalance,
+        list,
+		count;
     
     await userModel.findDataById([ctx.session.id])
 	.then(res => {
@@ -44,16 +48,33 @@ exports.getWallet = async ctx => {
     let myKeyPair = StellarSdk.Keypair.fromSecret(myData.user_secret_key)
     var account = await server.loadAccount(myKeyPair.publicKey())
     
+    await transactionModel.findDataCountById([ctx.session.id])
+	.then(async (res) => {
+		count = res[0]['count']
+	}).catch(err => {
+		console.log(err)
+	})
+
+	await transactionModel.listData([1, ctx.session.id])
+	.then(async (res) => {
+		list = res
+	}).catch(err => {
+		console.log(err)
+    })
+
 	await ctx.render('wallet/wallet', {
         session : ctx.session,
         account_balance : account.balances[0].balance,
         channel_balance : channelBySponsorBalance + channelByReceiveBalance,
+        list : list,
+		countPage : Math.ceil(count / 5)
 	})
 }
 
 exports.postWallet = async ctx => {
     await checkLogin(ctx);
 
+    let transaction_id;
     let {name, amount} = ctx.request.body
 
     await userModel.findDataById([ctx.session.id])
@@ -67,7 +88,7 @@ exports.postWallet = async ctx => {
     var account = await server.loadAccount(myKeyPair.publicKey())
     if (parseFloat(account.balances[0].balance) > parseFloat(amount)) {
         await userModel.findDataByName([name])
-        .then(res => {
+        .then(async (res) => {
             try {
                 var sourceKeys =StellarSdk.Keypair.fromSecret(res[0].user_secret_key);
                 server.loadAccount(res[0].user_pubkey).catch(StellarSdk.NotFoundError, function (error) {
@@ -96,10 +117,23 @@ exports.postWallet = async ctx => {
                 }).catch(function(error) {
                     console.error('Something went wrong!', error);
                 })
-                ctx.body = {
-                    code : 200,
-                    message : "转账成功",
-                }
+                var toData = res[0]
+                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), myData.user_name, toData.user_name])
+                .then(res => {
+                    transaction_id = res.insertId
+                }).catch(err => {
+                    console.log(err)
+                })
+                await messageModel.insertData([transaction_id, moment().format('YYYY-MM-DD HH:mm:ss'), 1, "", 0, toData.user_id, myData.user_id, myData.user_name])
+                .then(res => {
+					ctx.body = {
+						code : 200,
+						message : '转账成功',
+						toid : toData.user_id,
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			} catch (e) {
 				ctx.body = {
 					code : 500,
@@ -115,4 +149,14 @@ exports.postWallet = async ctx => {
             message : "余额不足",
         }
     }
+}
+
+exports.postWallet_list = async ctx => {
+	let page = ctx.request.body.page;
+	await transactionModel.listData([page, ctx.session.id])
+	.then(result => {
+		ctx.body = result
+	}).catch(() => {
+		ctx.body = 'error'
+	})
 }

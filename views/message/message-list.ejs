@@ -13,6 +13,9 @@
 									case 0 :
 										var type = "邀请创建通道";
 										break;
+									case 1 :
+										var type = "账户交易";
+										break;
 									default:
 										var type = "异常";
 								}
@@ -60,6 +63,9 @@
 							switch (val.message_type) {
 								case 0:
 									type = "邀请创建通道";
+									break;
+								case 1:
+									type = "账户交易";
 									break;
 								default:
 									type = "异常";

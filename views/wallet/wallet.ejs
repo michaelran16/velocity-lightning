@@ -21,18 +21,32 @@
         </form>
         <h3 style="text-align: center;margin-top: 100px;">历史记录</h3>
         <ul class="posts" style="width: 50%;margin: 0 auto;margin-top: 10px;">
-            <li>
-                <div class="title" style="margin-left: 0px;">
-                    对方Name:bob
-                </div>
-                <span>+10XLM</span>
-            </li>
-            <li>
-                <div class="title" style="margin-left: 0px;">
-                    对方Name:bob
-                </div>
-                <span>+10XLM</span>
-            </li>
+			<% list.forEach (function(res) { %>
+				<%
+					if (res.transaction_sponsor_id==session.id) {
+						var transaction_name = res.transaction_receive_name
+						var transaction_amount = "-"+res.transaction_amount
+					} else {
+						var transaction_name = res.transaction_sponsor_name
+						var transaction_amount = "+"+res.transaction_amount
+					}
+					switch (res.transaction_type) {
+						case 0:
+							var transaction_type = "账户交易";
+							break
+						default :
+							var transaction_type = "异常";
+					}
+				%>
+				<li>
+					<div class="title" style="margin-left: 0px;">
+						对方Name:<%= transaction_name %>
+					</div>
+					<span><%= transaction_type %></span>
+					<span><%= transaction_amount %>XLM</span>
+					<span><%= res.transaction_add_time %></span>
+				</li>
+			<% }) %>
         </ul>
         <div style="margin-top: 30px" class="pagination" id="page"></div>	
 	</div>
@@ -40,7 +54,7 @@
 	<script>
         pagination({
 			selector: '#page',
-			totalPage: 1,
+			totalPage: <%= countPage %>,
 			currentPage: 1,
 			prev: '上一页',
 			next: '下一页',
@@ -50,7 +64,7 @@
 			count: 2//当前页前后显示的数量
 		}, function(val) {
 			$.ajax({
-				url : "channel-list",
+				url : "wallet-list",
 				type : 'POST',
 				data : {
 					page : val
@@ -60,17 +74,28 @@
 					if (data != 'error') {
 						$('.posts').html(' ')
 						$.each(data,function(i,val){
-							var status = '<span style="height: 26px;background: ' 
-							status += val.channel_status==1?"#5FB878":"red"
-							status += ';width: 26px;border-radius: 50%;"></span>';
-							console.log(status)
+							if (val.transaction_sponsor_id=="<%= session.id %>") {
+								var transaction_name = val.transaction_receive_name
+								var transaction_amount = "-"+val.transaction_amount
+							} else {
+								var transaction_name = val.transaction_sponsor_name
+								var transaction_amount = "+"+val.transaction_amount
+							}
+							switch (val.transaction_type) {
+								case 0:
+									var transaction_type = "账户交易";
+									break
+								default :
+									var transaction_type = "异常";
+							}
 							$('.posts').append(
 								'<li>'+
-									'<a href="/channel-details/'+ val.channel_id +'">'+
-										'<div class="title">'+
-											val.channel_name + status +
-										'</div>'+
-									'</a>'+
+									'<div class="title" style="margin-left: 0px;">'+
+										'对方Name:'+ transaction_name +
+									'</div>'+
+									'<span>'+ transaction_type +'</span>&nbsp;'+
+									'<span>'+ transaction_amount +'XLM</span>&nbsp;'+
+									'<span>'+ val.transaction_add_time +'</span>'+
 								'</li>'
 							)
 						})
@@ -105,6 +130,9 @@
 						   $('input').val('')
 						   fade('用户名存在')
 					   } else if(data.message == '转账成功') {
+							var fromid = "<%= session.id %>";
+							var _data = '{"type":"text","fromid":"'+fromid+'","toid":"'+data.toid+'"}';
+							socket.emit('message', _data);
 							fade('转账成功')
 							setTimeout(()=>{
 								location.reload();

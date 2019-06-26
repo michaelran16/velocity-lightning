@@ -29,48 +29,40 @@ let query = function(sql, values) {
 	})
 }
 
-// 通道数据添加
+// 交易数据添加
 let insertData = function(value) {
-	let sql = "insert into channels(channel_name, channel_sponsor_id, channel_receive_id, channel_add_time, channel_status,"+
-	" channel_sponsor_amount, channel_receive_amount, channel_sponsor_version_pubkey, channel_sponsor_version_secret_key,"+
-	" channel_sponsor_ratchet_pubkey, channel_sponsor_ratchet_secret_key, channel_receive_version_pubkey, channel_receive_version_secret_key,"+
-	" channel_receive_ratchet_pubkey, channel_receive_ratchet_secret_key, channel_sponsor_deposit, channel_receive_deposit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	let sql = "insert into transaction(transaction_type, transaction_amount, transaction_sponsor_id, transaction_receive_id, transaction_add_time, transaction_sponsor_name, "+
+	"transaction_receive_name) values(?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }
 
-// 通过ID查找通道
+// 通过ID查找交易
 let findDataById = function(value) {
-	let sql = `select * from channels where channel_id = ?;`
+	let sql = `select * from transaction where transaction_id = ?;`
 	return query(sql, value)
 }
 
 // 通过ID查找通道数量
 let findDataCountById = function(value) {
-	let sql = `select count(*) as count from channels where channel_sponsor_id = ${value} or channel_receive_id = ${value};`
+	let sql = `select count(*) as count from transaction where transaction_sponsor_id = ${value} or transaction_receive_id = ${value};`
 	return query(sql, value)
 }
 
 // 通道列表
 let listData = function(value) {
-	let sql = `select * from channels where channel_sponsor_id = ${value[1]} or channel_receive_id = ${value[1]} order by channel_id desc limit ${(value[0]-1)*10},10;`
-	return query(sql)
-}
-
-// 修改通道状态
-let updateStatusReceiveDepositById = function(value) {
-	let sql = `update channels set channel_status = ${value[0]}, channel_receive_deposit = ${value[1]} where channel_id = ${value[2]}`
+	let sql = `select * from transaction where transaction_sponsor_id = ${value[1]} or transaction_receive_id = ${value[1]} order by transaction_id desc limit ${(value[0]-1)*5},5;`
 	return query(sql)
 }
 
 // 查询通道发起人在有效通道中的余额
 let findSponsorAmountById = function(value) {
-	let sql = `select ifnull(sum(channel_sponsor_amount), 0) as amount from channels where channel_sponsor_id = ${value[0]} and channel_status = 1;`
+	let sql = `select ifnull(sum(channel_sponsor_amount), 0) as amount from transaction where channel_sponsor_id = ${value[0]} and channel_status = 1;`
 	return query(sql)
 }
 
 // 查询通道接受人在有效通道中的余额
 let findReceiveAmountById = function(value) {
-	let sql = `select ifnull(sum(channel_receive_amount), 0) as amount from channels where channel_receive_id = ${value[0]} and channel_status = 1;`
+	let sql = `select ifnull(sum(channel_receive_amount), 0) as amount from transaction where channel_receive_id = ${value[0]} and channel_status = 1;`
 	return query(sql)
 }
 
@@ -79,7 +71,6 @@ module.exports = {
 	findDataById,
 	findDataCountById,
 	listData,
-	updateStatusReceiveDepositById,
 	findSponsorAmountById,
 	findReceiveAmountById,
 }

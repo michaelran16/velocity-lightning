@@ -55,6 +55,9 @@ exports.getMessage_details = async ctx => {
 		if (res[0].message_type==0) {
 			ctx.redirect('/channel-invite-create/'+res[0].message_id)
 			return false;
+		} else if (res[0].message_type==1) {
+			ctx.redirect('/wallet')
+			return false;
 		}
 	}).catch(err=>{
 		console.log(err)
