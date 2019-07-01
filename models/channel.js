@@ -31,10 +31,11 @@ let query = function(sql, values) {
 
 // 通道数据添加
 let insertData = function(value) {
-	let sql = "insert into channels(channel_name, channel_sponsor_id, channel_receive_id, channel_add_time, channel_status,"+
-	" channel_sponsor_amount, channel_receive_amount, channel_sponsor_version_pubkey, channel_sponsor_version_secret_key,"+
-	" channel_sponsor_ratchet_pubkey, channel_sponsor_ratchet_secret_key, channel_receive_version_pubkey, channel_receive_version_secret_key,"+
-	" channel_receive_ratchet_pubkey, channel_receive_ratchet_secret_key, channel_sponsor_deposit, channel_receive_deposit) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	let sql = "insert into channels(channel_name, channel_sponsor_id, channel_receive_id, channel_add_time, channel_status," +
+	" channel_sponsor_amount, channel_receive_amount, channel_sponsor_ratchet_pubkey, channel_sponsor_ratchet_secret_key," +
+	" channel_receive_ratchet_pubkey, channel_receive_ratchet_secret_key, channel_escrow_pubkey, channel_escrow_secret_key," +
+	" channel_sponsor_deposit, channel_receive_deposit, channel_settle_with_sponsor_tx, channel_settle_with_receive_tx, channel_sponsor_ratchet_tx," +
+	" channel_receive_ratchet_tx) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }
 
@@ -56,21 +57,27 @@ let listData = function(value) {
 	return query(sql)
 }
 
-// 修改通道状态
+// 确定开启通道，向里存钱
 let updateStatusReceiveDepositById = function(value) {
-	let sql = `update channels set channel_status = ${value[0]}, channel_receive_deposit = ${value[1]} where channel_id = ${value[2]}`
+	let sql = `update channels set channel_status = ${value[0]}, channel_receive_deposit = ${value[1]}, channel_receive_amount = ${value[1]} where channel_id = ${value[2]};`
 	return query(sql)
 }
 
 // 查询通道发起人在有效通道中的余额
 let findSponsorAmountById = function(value) {
-	let sql = `select ifnull(sum(channel_sponsor_amount), 0) as amount from channels where channel_sponsor_id = ${value[0]} and channel_status = 1;`
+	let sql = `select ifnull(sum(channel_sponsor_amount), 0) as amount from channels where channel_sponsor_id = ${value[0]} and (channel_status = 1 or channel_status=3);`
 	return query(sql)
 }
 
 // 查询通道接受人在有效通道中的余额
 let findReceiveAmountById = function(value) {
-	let sql = `select ifnull(sum(channel_receive_amount), 0) as amount from channels where channel_receive_id = ${value[0]} and channel_status = 1;`
+	let sql = `select ifnull(sum(channel_receive_amount), 0) as amount from channels where channel_receive_id = ${value[0]} and (channel_status = 1 or channel_status=3);`
+	return query(sql)
+}
+
+//查询自己开的通道有多少
+let findDataCountByself = function(value) {
+	let sql = `select count(*) as count from channels where channel_sponsor_id = ${value} and (channel_status=1 or channel_status=3);`
 	return query(sql)
 }
 
@@ -82,4 +89,5 @@ module.exports = {
 	updateStatusReceiveDepositById,
 	findSponsorAmountById,
 	findReceiveAmountById,
+	findDataCountByself,
 }

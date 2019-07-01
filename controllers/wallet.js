@@ -21,8 +21,10 @@ exports.getWallet = async ctx => {
 
     let channelBySponsorBalance,
         channelByReceiveBalance,
+        channelBySelfCount,
         list,
-		count;
+        count,
+        myData;
     
     await userModel.findDataById([ctx.session.id])
 	.then(res => {
@@ -41,6 +43,13 @@ exports.getWallet = async ctx => {
     await channelModel.findReceiveAmountById([ctx.session.id])
     .then(res => {
         channelByReceiveBalance = res[0].amount
+    }).catch(err => {
+        console.log(err)
+    })
+
+    await channelModel.findDataCountByself([ctx.session.id])
+    .then(res => {
+        channelBySelfCount = res[0].count
     }).catch(err => {
         console.log(err)
     })
@@ -65,7 +74,7 @@ exports.getWallet = async ctx => {
 	await ctx.render('wallet/wallet', {
         session : ctx.session,
         account_balance : account.balances[0].balance,
-        channel_balance : channelBySponsorBalance + channelByReceiveBalance,
+        channel_balance : channelBySponsorBalance + channelByReceiveBalance + (channelBySelfCount * 4.5),
         list : list,
 		countPage : Math.ceil(count / 5)
 	})

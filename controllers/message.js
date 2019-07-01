@@ -11,7 +11,7 @@ const moment = require('moment');
 
 exports.getMessage_list = async ctx => {
     await checkLogin(ctx);
-
+	
 	let list,
 		count;
 
@@ -49,7 +49,6 @@ exports.postMessage_list = async ctx => {
 exports.getMessage_details = async ctx => {
 	await checkLogin(ctx);
 	await messageModel.updateReadById([ctx.params.id])
-	let info;
 	await messageModel.findDataById([ctx.params.id])
 	.then(res => {
 		if (res[0].message_type==0) {

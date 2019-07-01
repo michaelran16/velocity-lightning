@@ -51,7 +51,12 @@ let listData = function(value) {
 }
 
 let updateReadById = function(value) {
-	let sql = `update message set message_is_read = 1 where message_id = ${value}`
+	let sql = `update message set message_is_read = 1 where message_id = ${value};`
+	return query(sql)
+}
+
+let findDataByEventIdType = function(value) {
+	let sql = `select message_id from message where message_event_id= ${value} and message_type = 0;`
 	return query(sql)
 }
 
@@ -61,4 +66,5 @@ module.exports = {
 	findDataCountById,
 	listData,
 	updateReadById,
+	findDataByEventIdType,
 }

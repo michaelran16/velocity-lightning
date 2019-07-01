@@ -185,6 +185,26 @@ header .user_name {
     color: #5FB878;
     border:1px solid #5FB878;
 }
+
+.refuse {
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    background: #ff6690;
+    cursor: pointer;
+    color: #fff;
+    float: left;
+    margin-top: 20px ;
+    border:1px solid #fff;
+}
+.refuse:hover{
+    background: #fff;
+    color: #ff6690;
+    border:1px solid #ff6690;
+}
 .comment_list{
     border: 1px solid #ddd;
     border-radius: 4px;

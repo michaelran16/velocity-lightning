@@ -77,7 +77,7 @@ exports.postLogin = async ctx => {
 
 	await userModel.findDataByName([name])
 	.then(res => {
-		if (res[0].user_name==name && res[0].user_secret_key==secret) {
+		if (res.length && res[0].user_name===name && res[0].user_secret_key===secret) {
 			ctx.session = {
 				name : name,
 				id : res[0].user_id,
