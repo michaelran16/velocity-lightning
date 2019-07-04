@@ -10,5 +10,7 @@ router.get('/channel-create', controllers.getChannel_create)
 router.post('/channel-create', controllers.postChannel_create)
 router.get('/channel-invite-create/:id', controllers.getChannel_invite_create)
 router.post('/channel-invite-create/:id', controllers.postChannel_invite_create)
+router.post('/channel-pay', controllers.postChannel_pay)
+router.post('/channel-close', controllers.postChannel_close)
 
 module.exports = router

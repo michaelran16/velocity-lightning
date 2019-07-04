@@ -8,45 +8,169 @@
 			<div>
 				通道状态：<%= info.channel_status==1?"打开":"未开启" %>
 			</div>
-			<div class="submit">测试</div>
+			<% if(info.channel_status==1) { %>
+				<% if(info.channel_sponsor_id==session.id) { %>
+					<div>我的通道余额：<%= info.channel_sponsor_amount %></div>
+					<div>对方通道余额：<%= info.channel_receive_amount %></div>
+				<% } else { %>
+					<div>我的通道余额：<%= info.channel_receive_amount %></div>
+					<div>对方通道余额：<%= info.channel_sponsor_amount %></div>
+				<% } %>
+				<div class="close_channel" style="float: initial;">关闭通道</div>
+				<hr/>
+				<h3>向对方付款</h3>
+				<div>
+					<label>支付金额：</label>
+					<input placeholder="请输入金额" type="number" min="0" name="amount" />
+				</div>
+				<input type="hidden" value="<%= info.channel_id %>" name="channel_id" />
+				<div class="submit">支付</div>
+			<% } else { %>
+				<div class="create_channel">创建新通道</div>
+			<% } %>
 		</form>
+		<h3 style="text-align: center;margin-top: 100px;">通道交易记录</h3>
+        <ul class="posts" style="width: 50%;margin: 0 auto;margin-top: 10px;">
+			<% list.forEach (function(res) { %>
+				<%
+					if (res.transaction_sponsor_id==session.id) {
+						var transaction_name = res.transaction_receive_name
+						var transaction_amount = "-"+res.transaction_amount
+					} else {
+						var transaction_name = res.transaction_sponsor_name
+						var transaction_amount = "+"+res.transaction_amount
+					}
+					switch (res.transaction_type) {
+						case 0:
+							var transaction_type = "账户交易";
+							break
+						case 1:
+							var transaction_type = "通道交易";
+							break;
+						default :
+							var transaction_type = "异常";
+					}
+				%>
+				<li>
+					<div class="title" style="margin-left: 0px;">
+						对方Name:<%= transaction_name %>
+					</div>
+					<span><%= transaction_type %></span>
+					<span><%= transaction_amount %>XLM</span>
+					<span><%= res.transaction_add_time %></span>
+				</li>
+			<% }) %>
+		</ul>
+		<div style="margin-top: 30px" class="pagination" id="page"></div>
 	</div>
+	<script src="/js/pagination.js"></script>
 	<script>
+		pagination({
+			selector: '#page',
+			totalPage: <%= countPage %>,
+			currentPage: 1,
+			prev: '上一页',
+			next: '下一页',
+			first: true,
+			last: true,
+			showTotalPage: true,
+			count: 2//当前页前后显示的数量
+		}, function(val) {
+			$.ajax({
+				url : "/channel-details/<%= info.channel_id %>",
+				type : 'POST',
+				data : {
+					page : val
+				},
+				cache : false,
+				success: function (data) {
+					if (data != 'error') {
+						$('.posts').html(' ')
+						$.each(data,function(i,val){
+							if (val.transaction_sponsor_id=="<%= session.id %>") {
+								var transaction_name = val.transaction_receive_name
+								var transaction_amount = "-"+val.transaction_amount
+							} else {
+								var transaction_name = val.transaction_sponsor_name
+								var transaction_amount = "+"+val.transaction_amount
+							}
+							switch (val.transaction_type) {
+								case 0:
+									var transaction_type = "账户交易";
+									break
+								case 1:
+									var transaction_type = "通道交易";
+									break;
+								default :
+									var transaction_type = "异常";
+							}
+							$('.posts').append(
+								'<li>'+
+									'<div class="title" style="margin-left: 0px;">'+
+										'对方Name:'+ transaction_name +
+									'</div>'+
+									'<span>'+ transaction_type +'</span>&nbsp;'+
+									'<span>'+ transaction_amount +'XLM</span>&nbsp;'+
+									'<span>'+ val.transaction_add_time +'</span>'+
+								'</li>'
+							)
+						})
+					} else {
+						fend('分页不存在')
+					}
+				}
+			})
+		})
 		$(window).keyup(function (e) {
 			if (e.keyCode == 13) {
 				$('.submit').click()
 			}
 		})
+		$('.create_channel').click(()=>{
+			window.location.href = "/channel-create";
+		})
+		$('.close_channel').click(()=>{
+			$.ajax({
+				url: "/channel-close",
+				data: {
+					channel_id: $('input[name=channel_id]').val(),
+				},
+				type: "POST",
+				dataType: 'json',
+				success: function (data) {
+					fade('测试')
+				},
+				error: function () {
+					fade('异常')
+				}
+			})
+		})
 		$('.submit').click(()=>{
-			return false;
-			if ($('input[name=name]').val().trim() == '') {
-				fade('请输入用户名！')
-			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
-				fade('请输入合法字符！')
-			} else if ($('textarea[name=secret]').val().trim() == '') {
-				fade('请输入Stellar地址！')
+			if ($('input[name=amount]').val() <= 0) {
+				fade('请输入正确资金！')
+				$('input[name=amount]').val("")
 			} else {
 				$.ajax({
-					url: "/register",
+					url: "/channel-pay",
 					data: {
-						name: $('input[name=name]').val(),
-						secret: $('textarea[name=secret]').val(),
+						amount: $('input[name=amount]').val(),
+						channel_id: $('input[name=channel_id]').val(),
 					},
 					type: "POST",
 					cache: false,
 					dataType: 'json',
 					success: function (data) {
-					   if (data.message == '用户存在') {
-						   $('input').val('')
-						   fade('用户名存在')
-					   } else if(data.message == '注册成功') {
-							fade('注册成功')
+						if (data.code==200) {
+							fade('支付成功')
+							var fromid = "<%= session.id %>";
+							var _data = '{"type":"text","fromid":"'+fromid+'","toid":"'+data.toid+'"}';
+							socket.emit('message', _data);
 							setTimeout(()=>{
-								window.location.href="/login"
+								window.location.reload()
 							},1000)
-					   	} else {
+						} else {
 							fade(data.message)
-					   	}
+						}
 					},
 					error: function () {
 						fade('异常')

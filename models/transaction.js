@@ -32,7 +32,7 @@ let query = function(sql, values) {
 // 交易数据添加
 let insertData = function(value) {
 	let sql = "insert into transaction(transaction_type, transaction_amount, transaction_sponsor_id, transaction_receive_id, transaction_add_time, transaction_sponsor_name, "+
-	"transaction_receive_name) values(?, ?, ?, ?, ?, ?, ?);"
+	"transaction_receive_name, transaction_channel_id) values(?, ?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }
 
@@ -42,15 +42,17 @@ let findDataById = function(value) {
 	return query(sql, value)
 }
 
-// 通过ID查找通道数量
+// 通过ID查找交易数量
 let findDataCountById = function(value) {
-	let sql = `select count(*) as count from transaction where transaction_sponsor_id = ${value} or transaction_receive_id = ${value};`
+	let sql = `select count(*) as count from transaction where transaction_sponsor_id = ${value[0]} or transaction_receive_id = ${value[0]} 
+	and transaction_type = ${value[1]} and transaction_channel_id = ${value[2]};`
 	return query(sql, value)
 }
 
 // 通道列表
 let listData = function(value) {
-	let sql = `select * from transaction where transaction_sponsor_id = ${value[1]} or transaction_receive_id = ${value[1]} order by transaction_id desc limit ${(value[0]-1)*5},5;`
+	let sql = `select * from transaction where (transaction_sponsor_id = ${value[1]} or transaction_receive_id = ${value[1]}) and transaction_type = ${value[2]} 
+	and transaction_channel_id = ${value[3]} order by transaction_id desc limit ${(value[0]-1)*5},5;`
 	return query(sql)
 }
 

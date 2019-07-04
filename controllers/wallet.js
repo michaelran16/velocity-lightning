@@ -57,14 +57,14 @@ exports.getWallet = async ctx => {
     let myKeyPair = StellarSdk.Keypair.fromSecret(myData.user_secret_key)
     var account = await server.loadAccount(myKeyPair.publicKey())
     
-    await transactionModel.findDataCountById([ctx.session.id])
+    await transactionModel.findDataCountById([ctx.session.id, 0, 0])
 	.then(async (res) => {
 		count = res[0]['count']
 	}).catch(err => {
 		console.log(err)
 	})
 
-	await transactionModel.listData([1, ctx.session.id])
+	await transactionModel.listData([1, ctx.session.id, 0, 0])
 	.then(async (res) => {
 		list = res
 	}).catch(err => {
@@ -127,7 +127,7 @@ exports.postWallet = async ctx => {
                     console.error('Something went wrong!', error);
                 })
                 var toData = res[0]
-                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), myData.user_name, toData.user_name])
+                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), myData.user_name, toData.user_name, 0])
                 .then(res => {
                     transaction_id = res.insertId
                 }).catch(err => {
@@ -162,7 +162,7 @@ exports.postWallet = async ctx => {
 
 exports.postWallet_list = async ctx => {
 	let page = ctx.request.body.page;
-	await transactionModel.listData([page, ctx.session.id])
+	await transactionModel.listData([page, ctx.session.id, 0])
 	.then(result => {
 		ctx.body = result
 	}).catch(() => {

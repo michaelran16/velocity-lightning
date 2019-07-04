@@ -185,7 +185,6 @@ header .user_name {
     color: #5FB878;
     border:1px solid #5FB878;
 }
-
 .refuse {
     display: block;
     width: 100px;
@@ -201,6 +200,44 @@ header .user_name {
     border:1px solid #fff;
 }
 .refuse:hover{
+    background: #fff;
+    color: #ff6690;
+    border:1px solid #ff6690;
+}
+.create_channel {
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    background: #ff6690;
+    cursor: pointer;
+    color: #fff;
+    float: left;
+    margin-top: 20px ;
+    border:1px solid #fff;
+}
+.create_channel:hover{
+    background: #fff;
+    color: #ff6690;
+    border:1px solid #ff6690;
+}
+.close_channel {
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    background: #ff6690;
+    cursor: pointer;
+    color: #fff;
+    float: left;
+    margin-top: 20px ;
+    border:1px solid #fff;
+}
+.close_channel:hover{
     background: #fff;
     color: #ff6690;
     border:1px solid #ff6690;

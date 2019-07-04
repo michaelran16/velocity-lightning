@@ -57,6 +57,9 @@ exports.getMessage_details = async ctx => {
 		} else if (res[0].message_type==1) {
 			ctx.redirect('/wallet')
 			return false;
+		} else if (res[0].message_type==2) {
+			ctx.redirect('/channel-details/'+res[0].message_event_id)
+			return false;
 		}
 	}).catch(err=>{
 		console.log(err)
