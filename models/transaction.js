@@ -32,7 +32,9 @@ let query = function(sql, values) {
 // 交易数据添加
 let insertData = function(value) {
 	let sql = "insert into transaction(transaction_type, transaction_amount, transaction_sponsor_id, transaction_receive_id, transaction_add_time, transaction_sponsor_name, "+
-	"transaction_receive_name, transaction_channel_id) values(?, ?, ?, ?, ?, ?, ?, ?);"
+	"transaction_receive_name, transaction_channel_id, transaction_sponsor_ratchet_tx, transaction_receive_ratchet_tx, transaction_settle_with_sponsor_tx, "+
+	"transaction_settle_with_receive_tx, transaction_sequence_number, transaction_sponsor_amount, transaction_receive_amount) "+
+	"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	return query(sql, value)
 }
 

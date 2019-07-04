@@ -127,7 +127,8 @@ exports.postWallet = async ctx => {
                     console.error('Something went wrong!', error);
                 })
                 var toData = res[0]
-                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), myData.user_name, toData.user_name, 0])
+                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 
+                    myData.user_name, toData.user_name, 0, "", "", "", "", "", "", ""])
                 .then(res => {
                     transaction_id = res.insertId
                 }).catch(err => {
