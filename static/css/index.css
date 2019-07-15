@@ -14,6 +14,9 @@ blockquote {
     color: #333;
 }
 
+header{
+    background: #FFF !important;
+}
 body {
     margin-bottom: 20px;
 }
@@ -23,7 +26,23 @@ ul,li{
 a {
     text-decoration: none;
 }
-
+.head {
+    width: 100%;
+    height: 80px;
+    position: fixed;
+    left: 0;
+    top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #FFF;
+    z-index: 100;
+}
+.blank-head {
+    width: 100%;
+    height: 100px;
+    background: #FFF;
+    z-index: 100;
+}
 header {
     width: 60%;
     margin: 20px auto;
@@ -33,16 +52,16 @@ header:after{
     clear: both;
     display: table;
 }
-header .user_right{
+.head .user_right{
     float: right
 }
-header .user_right .active{
-    color: #5FB878;
-    background: #fff;
+.head .user_right .active{
+    color: #fff;
+    background: #5FB878;
     border: 1px solid #5FB878;
     box-shadow: 0 5px 5px #ccc;
 }
-header .user_name {
+.head .user_name {
     float: left
 }
 .user_name {
@@ -53,17 +72,17 @@ header .user_name {
 .has_user span,
 .none_user a {
     padding: 5px 15px;
-    background: #5FB878;
+    background: #FFF;
     border-radius: 15px;
-    color: #fff;
+    color: #5FB878;
     cursor: pointer;
     border: 1px solid #fff;
     transition: all 0.3s;
 }
 
 .has_user a:hover,.has_user span:hover{
-    color: #5FB878;
-    background: #fff;
+    color: #FFF;
+    background: #5FB878;
     border: 1px solid #5FB878;
     box-shadow: 0 5px 5px #ccc;
 }
@@ -293,7 +312,7 @@ header .user_name {
 }
 .form {
     margin: 0 auto;
-    width: 50%;
+    width: 100%;
     margin-top: 20px;
 }
 
@@ -319,7 +338,7 @@ textarea#spContent{
 }
 
 .container {
-    width: 60%;
+    width: 90%;
     margin: 0 auto;
 }
 .form img.preview {
@@ -380,10 +399,6 @@ a:hover {
 .success{
     color: #1E9FFF;
 }
-.container{
-    width: 60%;
-    margin:0 auto;
-}
 .message{
     position: fixed;
     top: -100%;
@@ -413,4 +428,36 @@ a:hover {
 .markdown ul li{
     list-style: circle;
     margin-top: 5px;
+}
+
+/* 我的钱包 */
+.wallet-username {
+    width: 100%;
+    height: 80px;
+}
+
+.wallet-input-username {
+    width: 70%;
+    height: 35px;
+    float: left;
+}
+
+.wallet-contack {
+    width: 15%;
+    height: 35px;
+    float: left;
+    line-height: 35px;
+    background: #5FB878;
+    color: #FFF;
+    margin-left: 10px;
+    box-shadow:0 5px 5px #ccc;
+    text-align: center;
+    border-radius: 15px;
+}
+
+/* 添加联系人 */
+.contack-add-wrap {
+    width: 90%;
+    height: auto;
+    margin: 0 auto;
 }

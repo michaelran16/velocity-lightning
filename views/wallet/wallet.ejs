@@ -9,9 +9,12 @@
 				通道余额：<%= channel_balance %> XLM
             </div>
             <h3>使用账户余额转账</h3>
-            <div>
-                <label>对方Name：</label>
-                <input placeholder="对方Name" type="text" name="name" />
+            <div class="wallet-username">
+                <label>对方用户名：</label>
+                <input class="wallet-input-username" placeholder="对方用户名" type="text" name="name" />
+                <div class="wallet-contack" data-toggle="modal" data-target="#myModal">
+	                联系人
+            	</div>
             </div>
             <div>
                 <label>转账金额：</label>
@@ -19,6 +22,49 @@
             </div>
 			<div class="submit">确定</div>
         </form>
+
+        <!-- 联系人 -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							
+						</h4>
+					</div>
+					<div class="modal-body">
+						联系人列表
+						<div class="contack-add-wrap">
+								<table class="table">
+								    <thead>
+									    <tr>
+									        <th>用户名</th>
+									        <th>操作</th>
+									    </tr>
+								    </thead>
+								    <tbody>
+									    <tr>
+									        <td><a href="#">Michael</a></td>
+									        <td><a href="#">选择</a></td>
+									    </tr>
+								    </tbody>
+								</table>
+							</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+						<button type="button" class="btn btn-primary contack-add">
+							新增
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+
         <h3 style="text-align: center;margin-top: 100px;">钱包交易记录</h3>
         <ul class="posts" style="width: 50%;margin: 0 auto;margin-top: 10px;">
 			<% list.forEach (function(res) { %>
@@ -39,8 +85,9 @@
 					}
 				%>
 				<li>
-					<div class="title" style="margin-left: 0px;">
-						对方Name:<%= transaction_name %>
+					<div class="title" style="margin-left: 0px;font-size: 12px;">
+						用户名: 
+						<%= transaction_name %>
 					</div>
 					<span><%= transaction_type %></span>
 					<span><%= transaction_amount %>XLM</span>
@@ -91,7 +138,7 @@
 							$('.posts').append(
 								'<li>'+
 									'<div class="title" style="margin-left: 0px;">'+
-										'对方Name:'+ transaction_name +
+										'对方用户名:'+ transaction_name +
 									'</div>'+
 									'<span>'+ transaction_type +'</span>&nbsp;'+
 									'<span>'+ transaction_amount +'XLM</span>&nbsp;'+
@@ -110,6 +157,17 @@
 				$('.submit').click()
 			}
 		})
+
+		// 加载联系人列表
+		$(".wallet-contack").click(function(){
+
+		})
+
+		// 添加联系人
+		$(".contack-add").click(function(){
+			window.location.href="/contack-add"		
+		})
+
 		$('.submit').click(()=>{
 			if ($('input[name=name]').val().trim() == '') {
 				fade('请输入对方用户名！')

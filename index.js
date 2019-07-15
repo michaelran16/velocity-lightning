@@ -35,6 +35,7 @@ app.use(bodyParser({
 }))
 //路由配置
 app.use(require('./routers/user.js').routes())
+app.use(require('./routers/contack.js').routes())
 app.use(require('./routers/channel.js').routes())
 app.use(require('./routers/message.js').routes())
 app.use(require('./routers/wallet.js').routes())

@@ -4,14 +4,20 @@
 
 	<meta charset="UTF-8">
 
-	<title>test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Stellar Lightning</title>
 
 	<link rel="stylesheet" href="/css/index.css">
 
 	<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-	
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<link rel="stylesheet" href="http://www.jq22.com/demo/jQuery-login20160222/css/jq22.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="icon" type="image/png" href="https://www.stellar.org/developers/images/favicon/rocket-96x96.png" sizes="96x96">
 	<script>
 		"<%  if (session.name) { %>"
 			var socket = io.connect('http://127.0.0.1:8000',{
@@ -83,14 +89,14 @@
 
 <body>
 
-	<header>
+	<div class="head">
 
 		<div class="user_name">
 			<% if (session.name) { %>
 				 Hello,<%= session.name %>
 			<% } %>
 			<% if (!session.name) { %>
-				欢迎注册登录^_^
+				欢迎访问
 			<% } %>
 		</div>
 
@@ -143,4 +149,5 @@
 			<% } %>
 		</div>
 
-	</header>
+	</div>
+	<div class="blank-head"></div>

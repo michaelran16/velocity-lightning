@@ -1,5 +1,51 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<div class="container">
+	<div id="login">
+<div class="wrapper">
+<div class="login">
+<form method="post" class="form container offset1 loginform">
+	<div id="owl-login">
+	<div class="hand"></div>
+	<div class="hand hand-r"></div>
+	<div class="arms">
+	<div class="arm"></div>
+	<div class="arm arm-r"></div>
+	</div>
+	</div>
+	<div class="pad">
+	<!-- <input type="hidden" name="_csrf" value="9IAtUxV2CatyxHiK2LxzOsT6wtBE6h8BpzOmk="> -->
+	<div class="control-group">
+	<div class="controls">
+	<label for="name" class="control-label fa fa-user"></label>
+	<input id="name" type="text" name="name" placeholder="Username" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+	</div>
+	</div>
+	<div class="control-group">
+	<div class="controls">
+	<label for="password" class="control-label fa fa-asterisk"></label>
+	<input id="password" type="password" name="secret" placeholder="Secret Key" tabindex="2" class="form-control input-medium">
+	</div>
+	</div>
+	</div>
+	<div class="form-actions">
+	<div tabindex="4" class="btn btn-primary login-btn">Login</div>
+	</div>
+</form>
+</div>
+</div>
+<script>
+    $(function() {
+
+        $('#login #password').focus(function() {
+            $('#owl-login').addClass('password');
+        }).blur(function() {
+            $('#owl-login').removeClass('password');
+        });
+    });
+    </script>
+</div>
+
+
+	<!-- <div class="container">
 		<form class="form create" method="post ">
 			<div>
 				<label>Name：</label>
@@ -11,18 +57,20 @@
 			</div>
 			<div class="submit">登录</div>
 		</form>		
-	</div>
+	</div> -->
+
 	<script>
 		$(window).keyup(function(e) {
 			if (e.keyCode == 13) {
-				$('.submit').click()
+				$('.login-btn').click()
 			}
 		})
-		$('.submit').click(()=>{
-			if ($('input[name=name]').val().trim() == '') {
-				fade('请输入用户名！')
-			} else if ($('textarea[name=secret]').val().trim() == '') {
-				fade('请输入Stellar地址！')
+		$('.login-btn').click(()=>{
+			if ($.trim($('input[name=name]').val())/*.trim()*/ == '') {
+				fade('请输入公钥！')
+			// } else if ($('textarea[name=secret]').val().trim() == '') {
+			} else if ($.trim($('input[name=secret]').val())/*.trim()*/ == '') {
+				fade('请输入密钥！')
 			} else {
 				console.log($('.form').serialize())
 				$.ajax({

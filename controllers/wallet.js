@@ -15,6 +15,17 @@ StellarSdk.Network.useTestNetwork();
 
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
 
+
+
+// 添加联系人
+exports.getContackadd = async ctx => {
+    console.log(111)
+    await checkNotLogin(ctx);
+    await ctx.render('wallet/contackadd', {
+        session : ctx.session
+    })
+}
+
 // 定义方法
 exports.getWallet = async ctx => {
     await checkLogin(ctx);
