@@ -22,7 +22,7 @@ const TIMEOUT_CLAIM_DELAY = 60 * 60 * 24 * 7 *2 // 俩星期时间戳
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
 
 exports.getChannel_list = async ctx => {
-	
+
 	await checkLogin(ctx);
 
 	let list,
@@ -93,7 +93,7 @@ exports.getChannel_details = async ctx => {
 	}).catch(err => {
 		console.log(err)
     })
-	
+
 	await ctx.render('channel/channel-details', {
 		session : ctx.session,
 		info : info,
@@ -154,8 +154,7 @@ exports.postChannel_create = async ctx => {
 			var sponsor = await server.loadAccount(myKeyPair.publicKey())
 
 			if (parseFloat(sponsor.balances[0].balance) > (parseFloat(amount)+3)) {
-				
-				// 建立三个辅助账号
+
 				let sponsor_ratchet = StellarSdk.Keypair.random()
 				let receive_ratchet = StellarSdk.Keypair.random()
 				let escrow = StellarSdk.Keypair.random()
@@ -179,7 +178,7 @@ exports.postChannel_create = async ctx => {
 				.build()
 				createAccountsTx.sign(myKeyPair)
 				await server.submitTransaction(createAccountsTx)
-				
+
 				var roundTime = moment().unix()
 				// 交换结算交易
 				var escrowAccount = await server.loadAccount(escrow.publicKey())
@@ -322,8 +321,8 @@ exports.postChannel_create = async ctx => {
 				setupAccountsTx.sign(receive_ratchet)
 				await server.submitTransaction(setupAccountsTx)
 				await channelModel.insertData([
-					channel_name, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 3, amount, 0, 
-					sponsor_ratchet.publicKey(), sponsor_ratchet.secret(), receive_ratchet.publicKey(), receive_ratchet.secret(), escrow.publicKey(), 
+					channel_name, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 3, amount, 0,
+					sponsor_ratchet.publicKey(), sponsor_ratchet.secret(), receive_ratchet.publicKey(), receive_ratchet.secret(), escrow.publicKey(),
 					escrow.secret(), amount, 0, settlementSponsor.toXDR(), settlementReceive.toXDR(), ratchetSponsor.toXDR(), ratchetReceive.toXDR(), newEscrowSequenceNumber.toString()
 				])
 				.then(res => {
@@ -335,7 +334,7 @@ exports.postChannel_create = async ctx => {
 				await messageModel.insertData([channel_id, moment().format('YYYY-MM-DD HH:mm:ss'), 0, "", 0, toData.user_id, myData.user_id, myData.user_name]).then(res => {
 					ctx.body = {
 						code : 200,
-						message : '申请成功',
+						message : 'Application Successful',
 						toid : toData.user_id,
 					}
 				}).catch(err => {
@@ -351,7 +350,7 @@ exports.postChannel_create = async ctx => {
 		} else {
 			ctx.body = {
 				code : 500,
-				message : '对方异常或不存在，请重新输入'
+				message : 'Counterpart not exist'
 			}
 		}
 	}).catch(err => {
@@ -462,7 +461,7 @@ exports.postChannel_invite_create = async ctx => {
 			})
 		).addOperation(
 			StellarSdk.Operation.accountMerge({
-				destination: fromUserData.user_pubkey,	
+				destination: fromUserData.user_pubkey,
 				source: channelData.channel_sponsor_ratchet_pubkey,
 			})
 		).addOperation(
@@ -489,7 +488,7 @@ exports.postChannel_invite_create = async ctx => {
 	}
 	ctx.body = {
 		code : 200,
-		message : '操作成功',
+		message : 'Operation Successful',
 	}
 }
 
@@ -633,8 +632,8 @@ exports.postChannel_pay = async ctx => {
 	)
 	.build()
 	ratchetReceive.sign(escrow)
-	await transactionModel.insertData([1, amount, fromUserData.user_id, toUserId, moment().format('YYYY-MM-DD HH:mm:ss'), 
-		fromUserData.user_name, toUserData.user_name, channel_id, settlementSponsor.toXDR(), settlementReceive.toXDR(), ratchetSponsor.toXDR(), 
+	await transactionModel.insertData([1, amount, fromUserData.user_id, toUserId, moment().format('YYYY-MM-DD HH:mm:ss'),
+		fromUserData.user_name, toUserData.user_name, channel_id, settlementSponsor.toXDR(), settlementReceive.toXDR(), ratchetSponsor.toXDR(),
 		ratchetReceive.toXDR(), newEscrowSequenceNumber.toString(), sponsor_amount, receive_amount])
 	// await channelModel.updateTx([channel_id, settlementSponsor.toXDR(), settlementReceive.toXDR(), ratchetSponsor.toXDR(), ratchetReceive.toXDR(), newEscrowSequenceNumber.toString()])
 	.then(res => {
@@ -646,7 +645,7 @@ exports.postChannel_pay = async ctx => {
 	await messageModel.insertData([channel_id, moment().format('YYYY-MM-DD HH:mm:ss'), 2, "", 0, toUserId, fromUserData.user_id, fromUserData.user_name]).then(res => {
 		ctx.body = {
 			code : 200,
-			message : '操作成功',
+			message : 'Operation Successful',
 			toid : toUserId,
 		}
 	}).catch(err => {
@@ -697,7 +696,7 @@ exports.postChannel_close = async ctx => {
 		})
 	).addOperation(
 		StellarSdk.Operation.accountMerge({
-			destination: fromUserData.user_pubkey,	
+			destination: fromUserData.user_pubkey,
 			source: channelData.channel_sponsor_ratchet_pubkey,
 		})
 	).addOperation(
@@ -717,6 +716,6 @@ exports.postChannel_close = async ctx => {
 	})
 	ctx.body = {
 		code: 200,
-		message: '操作成功',
+		message: 'Operation Successful',
 	}
 }

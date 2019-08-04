@@ -2,32 +2,32 @@
 var mysql = require('mysql')
 var config = require('../common/config.js')
 
-// 建立连接池
-var pool = mysql.createPool({
-	host : config.database.HOST,
-	user : config.database.USERNAME,
-	password : config.database.PASSWORD,
-	database : config.database.DATABASE,
-})
+// // 建立连接池
+// var pool = mysql.createPool({
+// 	host : config.database.HOST,
+// 	user : config.database.USERNAME,
+// 	password : config.database.PASSWORD,
+// 	database : config.database.DATABASE,
+// })
 
-let query = function(sql, values) {
-	return new Promise((resolve, reject) => {
-		pool.getConnection(function(err, connection) {
-			if (err) {
-				reject(err)
-			} else {
-				connection.query(sql, values, (err, rows) => {
-					if (err) {
-						reject(err)
-					} else {
-						resolve(rows)
-					}
-					connection.release()
-				})
-			}
-		})
-	})
-}
+// let query = function(sql, values) {
+// 	return new Promise((resolve, reject) => {
+// 		pool.getConnection(function(err, connection) {
+// 			if (err) {
+// 				reject(err)
+// 			} else {
+// 				connection.query(sql, values, (err, rows) => {
+// 					if (err) {
+// 						reject(err)
+// 					} else {
+// 						resolve(rows)
+// 					}
+// 					connection.release()
+// 				})
+// 			}
+// 		})
+// 	})
+// }
 
 // 通道数据添加
 let insertData = function(value) {
@@ -51,7 +51,7 @@ let findDataCountById = function(value) {
 	return query(sql, value)
 }
 
-// 通道列表
+// state channel
 let listData = function(value) {
 	let sql = `select * from channels where channel_sponsor_id = ${value[1]} or channel_receive_id = ${value[1]} order by channel_id desc limit ${(value[0]-1)*10},10;`
 	return query(sql)
@@ -89,7 +89,7 @@ let updateAmountData = function(value) {
 
 // 修改结算齿轮TX
 let updateTx = function(value) {
-	let sql = `update channels set channel_settle_with_sponsor_tx = "${value[1]}", channel_settle_with_receive_tx = "${value[2]}", 
+	let sql = `update channels set channel_settle_with_sponsor_tx = "${value[1]}", channel_settle_with_receive_tx = "${value[2]}",
 	channel_sponsor_ratchet_tx = "${value[3]}", channel_receive_ratchet_tx = "${value[4]}", channel_sequence_number = "${value[5]}" where channel_id = ${value[0]}`
 	return query(sql)
 }

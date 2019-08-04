@@ -1,9 +1,9 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<h1 style="text-align: center;">交换快照</h1>
+	<h1 style="text-align: center;">Exchange Snapshot</h1>
 	<div class="container">
 		<form class="form create" method="post ">
-			<div class="submit">交换</div>
-		</form>		
+			<div class="submit">Exchange</div>
+		</form>
 	</div>
 	<script>
 		$(window).keyup(function(e) {
@@ -20,17 +20,17 @@
 				dataType: 'json',
 				success: function (data) {
 				    if(data.code==200) {
-					    fade('交换申请成功')
+					    fade('Exchange Request Successful')
 					    console.log(data)
 				    } else {
 						$('input').val('')
-					    fade('建立失败')
+					    fade('Channel Failed')
 				    }
 				},
 				error: function () {
 					fade('异常')
 				}
 			})
-		})		
+		})
 	</script>
 <% include ../layouts/foot %>

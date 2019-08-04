@@ -51,10 +51,10 @@ function pagination(data,callback){
 			i_html += '<span id=\"nextPage\">'+ nextPage +'</span>'
 		}
 		if (data.showTotalPage && data.totalPage >= 1) {
-			i_html += '<i>'+ nowPage+'/'+data.totalPage +'</i>' 
+			i_html += '<i>'+ nowPage+'/'+data.totalPage +'</i>'
 		}
 		if (data.jumpBtn && data.totalPage >= 1) {
-			i_html += '前往<input id="pageInput" type="text" />页 <span id="inputGo">确定</span>'
+			i_html += '前往<input id="pageInput" type="text" />页 <span id="inputGo">OK</span>'
 		}
 		page.innerHTML = i_html;
 		var pageA = page.getElementsByTagName('a');
@@ -66,7 +66,7 @@ function pagination(data,callback){
 		}
 		// 第一页不请求
 		if (!pageOneLoad) {
-			callback && callback.call(null,dataPage)	
+			callback && callback.call(null,dataPage)
 		}
 	}
 	page.onclick = function(event){
@@ -74,13 +74,13 @@ function pagination(data,callback){
 		 	target = event.target || event.srcElement,
 			dataPage = parseInt(target.getAttribute('data-page'));
 			pageOneLoad = false;
-		if (target.className == 'active') return 
+		if (target.className == 'active') return
 		if (target.nodeName.toLowerCase() == 'a') {
 			pageAction(dataPage)
 		}
 		if (target.id == 'nextPage') {
 			nowPage++
-			pageAction(nowPage)	
+			pageAction(nowPage)
 		}
 		if (target.id == 'prevPage') {
 			nowPage--

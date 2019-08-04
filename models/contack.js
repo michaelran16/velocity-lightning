@@ -2,34 +2,6 @@
 var mysql = require('mysql')
 var config = require('../common/config.js')
 
-// 链接数据库
-var pool = mysql.createPool({
-	host : config.database.HOST,
-	user : config.database.USERNAME,
-	password : config.database.PASSWORD,
-	database : config.database.DATABASE,
-})
-
-// 执行SQL
-let query = function(sql, values) {
-	return new Promise((resolve, reject) => {
-		pool.getConnection(function(err, connection) {
-			if (err) {
-				reject(err)
-			} else {
-				connection.query(sql, values, (err, rows) => {
-					if (err) {
-						reject(err)
-					} else {
-						resolve(rows)
-					}
-					connection.release()
-				})
-			}
-		})
-	})
-}
-
 // 添加联系人
 let insertData = function(value) {
 	let sql = "insert into contack(user_id, user_name) values(?, ?);"
@@ -42,21 +14,42 @@ let findDataById = function(value) {
 	return query(sql, value)
 }
 
+// 联系人列表
+let listData = function(value) {
+	let sql = `select * from contack where user_id = ${value[1]} order by id desc limit ${(value[0]-1)*10},1000;`
+	return query(sql)
+}
+
 // 通过名字找联系人
 let findDataByName = function(value) {
 	let sql = `select * from contack where user_name = ?;`
 	return query(sql, value)
 }
 
+// 通过用户ID统计联系人总数
+let findDataCountById = function(value) {
+	let sql = `select count(id) as count from contack where user_id = ${value};`
+	return query(sql, value)
+}
+
 // 通过名字找联系人数量
 let findDataCountByName = function(value) {
-	let sql = `select count(id) as count from contack where user_name = ?;`
+	let sql = `select count(id) as count from contack where user_id = ? and user_name = ?;`
+	return query(sql, value)
+}
+
+// 删除联系人
+let deleteDate = function(value) {
+	let sql = `delete from contack where id = ? and user_id = ?;`
 	return query(sql, value)
 }
 
 module.exports = {
+	listData,
+	deleteDate,
 	insertData,
 	findDataById,
 	findDataByName,
+	findDataCountById,
 	findDataCountByName,
 }

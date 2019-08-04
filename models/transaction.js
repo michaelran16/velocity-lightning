@@ -2,32 +2,32 @@
 var mysql = require('mysql')
 var config = require('../common/config.js')
 
-// 建立连接池
-var pool = mysql.createPool({
-	host : config.database.HOST,
-	user : config.database.USERNAME,
-	password : config.database.PASSWORD,
-	database : config.database.DATABASE,
-})
+// // 建立连接池
+// var pool = mysql.createPool({
+// 	host : config.database.HOST,
+// 	user : config.database.USERNAME,
+// 	password : config.database.PASSWORD,
+// 	database : config.database.DATABASE,
+// })
 
-let query = function(sql, values) {
-	return new Promise((resolve, reject) => {
-		pool.getConnection(function(err, connection) {
-			if (err) {
-				reject(err)
-			} else {
-				connection.query(sql, values, (err, rows) => {
-					if (err) {
-						reject(err)
-					} else {
-						resolve(rows)
-					}
-					connection.release()
-				})
-			}
-		})
-	})
-}
+// let query = function(sql, values) {
+// 	return new Promise((resolve, reject) => {
+// 		pool.getConnection(function(err, connection) {
+// 			if (err) {
+// 				reject(err)
+// 			} else {
+// 				connection.query(sql, values, (err, rows) => {
+// 					if (err) {
+// 						reject(err)
+// 					} else {
+// 						resolve(rows)
+// 					}
+// 					connection.release()
+// 				})
+// 			}
+// 		})
+// 	})
+// }
 
 // 交易数据添加
 let insertData = function(value) {
@@ -51,7 +51,7 @@ let findDataCountById = function(value) {
 	return query(sql, value)
 }
 
-// 通道列表
+// state channel
 let listData = function(value) {
 	let sql = `select * from transaction where (transaction_sponsor_id = ${value[1]} or transaction_receive_id = ${value[1]}) and transaction_type = ${value[2]} 
 	and transaction_channel_id = ${value[3]} order by transaction_id desc limit ${(value[0]-1)*5},5;`

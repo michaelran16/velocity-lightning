@@ -1,16 +1,16 @@
 <%- include("../layouts/head",{type:'login'}) %>
-	<h1 style="text-align: center;">创建辅助账号</h1>
+	<h1 style="text-align: center;">Create Helper Account</h1>
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
 				<input type="text" value="<%= message %>" readonly="readonly">
 			</div>
 			<div>
-				<label>余额：</label>
+				<label>Balance：</label>
 				<input type="text" value="<%= balance %>" readonly="readonly">
 			</div>
-			<div class="submit">创建</div>
-		</form>		
+			<div class="submit">Create </div>
+		</form>
 	</div>
 	<script>
 		$(window).keyup(function(e) {
@@ -27,17 +27,17 @@
 				dataType: 'json',
 				success: function (data) {
 				    if(data.code==200) {
-					    fade('创建成功')
+					    fade('Channel Successful')
 					    console.log(data)
 				    } else {
 						$('input').val('')
-					    fade('建立失败')
+					    fade('Channel Failed')
 				    }
 				},
 				error: function () {
 					fade('异常')
 				}
 			})
-		})		
+		})
 	</script>
 <% include ../layouts/foot %>

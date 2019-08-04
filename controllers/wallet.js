@@ -16,16 +16,6 @@ StellarSdk.Network.useTestNetwork();
 const server = new StellarSdk.Server("https://horizon-testnet.stellar.org");
 
 
-
-// 添加联系人
-exports.getContackadd = async ctx => {
-    console.log(111)
-    await checkNotLogin(ctx);
-    await ctx.render('wallet/contackadd', {
-        session : ctx.session
-    })
-}
-
 // 定义方法
 exports.getWallet = async ctx => {
     await checkLogin(ctx);
@@ -36,7 +26,7 @@ exports.getWallet = async ctx => {
         list,
         count,
         myData;
-    
+
     await userModel.findDataById([ctx.session.id])
 	.then(res => {
 		myData = res[0]
@@ -67,7 +57,7 @@ exports.getWallet = async ctx => {
 
     let myKeyPair = StellarSdk.Keypair.fromSecret(myData.user_secret_key)
     var account = await server.loadAccount(myKeyPair.publicKey())
-    
+
     await transactionModel.findDataCountById([ctx.session.id, 0, 0])
 	.then(async (res) => {
 		count = res[0]['count']
@@ -114,15 +104,15 @@ exports.postWallet = async ctx => {
                 server.loadAccount(res[0].user_pubkey).catch(StellarSdk.NotFoundError, function (error) {
                     ctx.body = {
                         code : 500,
-                        message : '对方账户异常，请重试'
+                        message : 'Counterpart account unavailable'
                     }
                 })
                 .then(function() {
                     return server.loadAccount(myKeyPair.publicKey());
                 })
                 .then(function(sourceAccount) {
-                    var transaction = new StellarSdk.TransactionBuilder(sourceAccount, { 
-                        fee : 100 
+                    var transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
+                        fee : 100
                     })
                     .addOperation(StellarSdk.Operation.payment({
                         destination : res[0].user_pubkey,
@@ -131,14 +121,14 @@ exports.postWallet = async ctx => {
                     }))
                     .setTimeout(30)
                     .build();
-                    
+
                     transaction.sign(myKeyPair);
                     return server.submitTransaction(transaction);
                 }).catch(function(error) {
                     console.error('Something went wrong!', error);
                 })
                 var toData = res[0]
-                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 
+                await transactionModel.insertData([0, amount, myData.user_id, toData.user_id, moment().format('YYYY-MM-DD HH:mm:ss'),
                     myData.user_name, toData.user_name, 0, "", "", "", "", "", "", ""])
                 .then(res => {
                     transaction_id = res.insertId
@@ -149,7 +139,7 @@ exports.postWallet = async ctx => {
                 .then(res => {
 					ctx.body = {
 						code : 200,
-						message : '转账成功',
+						message : 'Operation Successful',
 						toid : toData.user_id,
 					}
 				}).catch(err => {
@@ -158,7 +148,7 @@ exports.postWallet = async ctx => {
 			} catch (e) {
 				ctx.body = {
 					code : 500,
-					message : '对方账户无效或验证失败，请重试'
+					message : 'Account invalid or Network Failure，try again'
 				}
 			}
         }).catch(err => {

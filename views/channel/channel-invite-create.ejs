@@ -1,19 +1,19 @@
 <%- include("../layouts/head",{type:'channel'}) %>
-	<h1 style="text-align: center;">邀请创建通道</h1>
+	<h1 style="text-align: center;">Invite to Open Channel</h1>
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
-				<label>通道名称：<%= channelData.channel_name %></label>
+				<label>Channel Name：<%= channelData.channel_name %></label>
 			</div>
 			<div>
-				<label>存入数量：</label>
-                <input placeholder="请输入存入数量" type="text" value="0" min="0" max="9999" name="amount" />
+				<label>Amount：</label>
+                <input placeholder="Input Amount" type="text" value="0" min="0" max="9999" name="amount" />
             </div>
             <div>
-				<label>对方存入数量：<%= channelData.channel_sponsor_deposit %></label>
+				<label>Counterpart amount：<%= channelData.channel_sponsor_deposit %></label>
 			</div>
 			<div>
-				<label>对方名称：<%= toUserData.user_name %></label>
+				<label>Counterpart Name ：<%= toUserData.user_name %></label>
 			</div>
 			<input type="hidden" name="type" value="0" />
 			<div class="submit">接收</div>
@@ -35,7 +35,7 @@
 		$('.submit').click(()=>{
 			if ($('input[name=type]').val()==0) {
 				if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()<1) {
-					fade('请输入存入数量,并且为正整数')
+					fade('Input a positive amount')
 					return false;
 				}
 			}
@@ -47,7 +47,7 @@
 				dataType: 'json',
 				success: function (data) {
 					if(data.code==200) {
-						fade('成功')
+						fade('Successful')
 						setTimeout(function() {
 							window.location.href = "/channel-details/<%= channelData.channel_id %>"
 						}, 1000)
@@ -59,6 +59,6 @@
 					fade('异常')
 				}
 			})
-		})		
+		})
 	</script>
 <% include ../layouts/foot %>

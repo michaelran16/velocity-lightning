@@ -6,18 +6,18 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Stellar Lightning</title>
+	<title>vLight Demo</title>
 
 	<link rel="stylesheet" href="/css/index.css">
 
-	<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<!-- <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script> -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<link rel="stylesheet" href="http://www.jq22.com/demo/jQuery-login20160222/css/jq22.css">
 	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
-	<link rel="icon" type="image/png" href="https://www.stellar.org/developers/images/favicon/rocket-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="https://www.firefox.com.cn/media/img/firefox/favicon.e6bb0e59df3d.ico">
 	<script>
 		"<%  if (session.name) { %>"
 			var socket = io.connect('http://127.0.0.1:8000',{
@@ -71,10 +71,10 @@
 					dataType: 'json',
 					success: function (data) {
 						if (data.code==200) {
-							fade('退出成功')
+							fade('Logout Successful')
 							setTimeout(()=>{
 								window.location.href = "/login"
-							},1500)	
+							},1500)
 						}
 					},
 					error: function () {
@@ -84,7 +84,7 @@
 			})
 		})
 	</script>
-	
+
 </head>
 
 <body>
@@ -106,19 +106,19 @@
 			<%  if (session.name) { %>
 				<div class="has_user">
 					<% if (type == 'wallet') { %>
-						<a class="active" href="/wallet">我的钱包</a>
+						<a class="active" href="/wallet">Stellar Wallet</a>
 					<% } else { %>
-						<a href="/wallet">我的钱包</a>
+						<a href="/wallet">Stellar Wallet</a>
 					<% } %>
 					<% if (type == 'channel') { %>
-						<a class="active" href="/channel-list">支付通道</a>
+						<a class="active" href="/channel-list">payment channel</a>
 					<% } else { %>
-						<a href="/channel-list">支付通道</a>
+						<a href="/channel-list">payment channel</a>
 					<% } %>
 					<% if (type == 'message') { %>
-						<a class="active" href="/message-list">我的消息</a>
+						<a class="active" href="/message-list">Messages</a>
 					<% } else { %>
-						<a href="/message-list" style="display: inline-block;">我的消息
+						<a href="/message-list" style="display: inline-block;">Messages
 							<i id="message" style="
 								display: none;
 								background: rgb(255, 0, 0);
@@ -129,7 +129,7 @@
 							</i>
 						</a>
 					<% } %>
-					<span class="logout">退出</span>
+					<span class="logout">Log Out</span>
 				</div>
 			<% } %>
 

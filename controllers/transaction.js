@@ -70,9 +70,9 @@ exports.getHelper = async ctx => {
 		})
 	})
 	if (helperData) {
-		message = '已经账号';
+		message = 'Have Account';
 	} else {
-		message = '没有账号，立即创建';
+		message = 'No Account, Create One';
 	}
 	await ctx.render('transaction/helper', {
 		session : ctx.session,
@@ -134,7 +134,7 @@ exports.postHelper = async ctx => {
 	let transactionResult = await server.submitTransaction(setupAccountsTx)
 	ctx.body = {
 		code : 200,
-		message : '创建成功'
+		message : 'Operation Successful'
 	}
 }
 
@@ -168,7 +168,7 @@ exports.postSnapshoot = async ctx => {
 			}
 		})
 	})
-	
+
 	let AliceRatchet = await server.loadAccount(helperData.AliceRatchetPublic);
 	let Round0Time = moment().unix();
 
@@ -198,7 +198,7 @@ exports.postSnapshoot = async ctx => {
 	console.log(snapshot)
 	ctx.body = {
 		code : 200,
-		message : '成功'
+		message : 'Successful'
 	}
 }
 
@@ -209,6 +209,6 @@ exports.getRatchet = async ctx => {
 exports.postRatchet = async ctx => {
 	ctx.body = {
 		code : 200,
-		message : '成功'
+		message : 'Successful'
 	}
 }

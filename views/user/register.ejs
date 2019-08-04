@@ -50,7 +50,7 @@
 		<form class="form create" method="post">
 			<div>
 				<label>Name：</label>
-				<input placeholder="请输入用户名" type="text" name="name" />
+				<input placeholder="Username" type="text" name="name" />
 			</div>
 			<div>
 				<label>Stellar地址：</label>
@@ -67,11 +67,11 @@
 		})
 		$('.login-btn').click(()=>{
 			if ($.trim($('input[name=name]').val())/*.trim()*/ == '') {
-				fade('请输入公钥！')
+				fade('Enter public key')
 			} else if ($('input[name=name]').val().match(/[<'">]/g)) {
-				fade('请输入合法字符！')
+				fade('Enter valid name')
 			} else if ($.trim($('input[name=secret]').val())/*.trim()*/ == '') {
-				fade('请输入秘钥！')
+				fade('Enter private key')
 			} else {
 				$.ajax({
 					url: "/register",
@@ -85,9 +85,9 @@
 					success: function (data) {
 					   if (data.message == '用户存在') {
 						   $('input').val('')
-						   fade('用户名存在')
-					   } else if(data.message == '注册成功') {
-							fade('注册成功')
+						   fade('Usernameexisted')
+					   } else if(data.message == 'Operation Successful') {
+							fade('Operation Successful')
 							setTimeout(()=>{
 								window.location.href="/login"
 							},1000)
@@ -98,8 +98,8 @@
 					error: function () {
 						fade('异常')
 					}
-				})			
+				})
 			}
-		})		
+		})
 	</script>
 <%- include ../layouts/foot %>

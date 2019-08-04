@@ -1,21 +1,21 @@
 <%- include("../layouts/head",{type:'channel'}) %>
-	<h1 style="text-align: center;">创建新通道</h1>
+	<h1 style="text-align: center;">Create New Channel</h1>
 	<div class="container">
 		<form class="form create" method="post ">
 			<div>
-				<label>通道名称：</label>
-				<input placeholder="请输入通道名称" type="text" name="channel_name" />
+				<label>Channel Name：</label>
+				<input placeholder="Enter Channel Name" type="text" name="channel_name" />
 			</div>
 			<div>
-				<label>存入数量：</label>
-				<input placeholder="请输入存入数量" type="text" name="amount" />
+				<label>Amount：</label>
+				<input placeholder="Input Amount" type="text" name="amount" />
 			</div>
 			<div>
-				<label>对方名称：</label>
-				<input placeholder="请输入对方名称" type="text" name="user_name" />
+				<label>Counterpart Name ：</label>
+				<input placeholder="Enter Counterpart Name " type="text" name="user_name" />
 			</div>
-			<div class="submit">发起申请</div>
-		</form>		
+			<div class="submit">Apply</div>
+		</form>
 	</div>
 	<script>
 		$(window).keyup(function(e) {
@@ -25,11 +25,11 @@
 		})
 		$('.submit').click(()=>{
 			if ($('input[name=channel_name]').val().trim() == '') {
-				fade('请输入通道名称')
+				fade('Enter Channel Name')
 			} else if ($('input[name=amount]').val().trim() == '' || $('input[name=amount]').val()<1) {
-				fade('请输入存入数量,并且为正整数')
+				fade('Input positive amount')
 			} else if ($('input[name=user_name]').val().trim() == '') {
-				fade('请输入对方名称')
+				fade('Enter Counterpart Name ')
 			} else {
 				$.ajax({
 					url: "/channel-create",
@@ -42,7 +42,7 @@
 							var fromid = "<%= session.id %>";
 							var _data = '{"type":"text","fromid":"'+fromid+'","toid":"'+data.toid+'"}';
 							socket.emit('message', _data);
-						    fade('申请成功，等待对方操作')
+						    fade('Requested, waiting on counterpart')
 					    } else {
 						    fade(data.message)
 					    }
@@ -50,8 +50,8 @@
 					error: function () {
 						fade('异常')
 					}
-				})			
+				})
 			}
-		})		
+		})
 	</script>
 <% include ../layouts/foot %>

@@ -1,0 +1,81 @@
+<%- include("../layouts/head",{type:'register'}) %>
+<div class="contack-add-wrap">
+	<div class="contack-add-wrap">
+		<table class="table">
+		    <thead>
+			    <tr>
+			        <th>Username</th>
+			        <th>操作</th>
+			    </tr>
+		    </thead>
+		    <tbody class="contack-list">
+
+		    </tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.contack-list').html('')
+	$.ajax({
+		url: "/contack-list",
+		data: {},
+		type: "POST",
+		cache: false,
+		dataType: 'json',
+		success: function (res) {
+			if(!res.error) {
+				list = res.data.list
+				html_str = ''
+				$.each(list, function(i,v){
+					html_str += '' +
+					'<tr data-dismiss="modal" >' +
+				        '<td>'+v.user_name+'</td>' +
+				        '<td><a href="javascript:onclick=contack_update('+v.id+', \''+v.user_name+'\');">编辑</a> &nbsp;&nbsp; <a href="javascript:onclick=contack_delete('+v.id+', \''+v.user_name+'\');">删除</a></td>' +
+				    '</tr>'
+				})
+				$('.contack-list').append(html_str)
+		   	} else {
+				fade(res.msg)
+		   	}
+		},
+		error: function () {
+			fade('服务器异常')
+		}
+	})
+
+	// 编辑
+	function contack_update(uid) {
+		console.log(uid)
+	}
+
+	// 删除
+	function contack_delete(id, username) {
+		if (confirm('确认删除'+username+'？')) {
+			console.log(1)
+			$.ajax({
+				url: "/contack-delete",
+				data: {
+					id: id,
+				},
+				type: "POST",
+				cache: false,
+				dataType: 'json',
+				success: function (data) {
+					if(!data.error) {
+						fade(data.msg)
+						setTimeout(()=>{
+							window.location.href="/contack-list"
+						},1000)
+				   	} else {
+						fade(data.msg)
+				   	}
+				},
+				error: function () {
+					fade('服务器异常')
+				}
+			})
+		}
+	}
+
+</script>
+<%- include ../layouts/foot %>

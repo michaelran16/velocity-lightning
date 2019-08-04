@@ -2,7 +2,7 @@
 const router = require('koa-router')()
 const controllers = require('../controllers/wallet')
 
-// 我的钱包
+// Stellar Wallet
 router.get('/wallet', controllers.getWallet)
 router.post('/wallet', controllers.postWallet)
 router.post('/wallet-list', controllers.postWallet_list)

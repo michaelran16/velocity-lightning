@@ -37,7 +37,7 @@ exports.postRegister = async ctx => {
 		if (res[0].count>0) {
 			ctx.body = {
 				code : 200,
-				message : '用户存在',
+				message : 'User existed',
 			}
 		} else {
 			try {
@@ -46,7 +46,7 @@ exports.postRegister = async ctx => {
 				.then(res => {
 					ctx.body = {
 						code : 200,
-						message : '注册成功'
+						message : 'Operation Successful'
 					}
 				}).catch(err => {
 					console.log(err)
@@ -54,7 +54,7 @@ exports.postRegister = async ctx => {
 			} catch (e) {
 				ctx.body = {
 					code : 200,
-					message : 'stellar账户验证失败，请重试'
+					message : 'stellar account unverified，try again'
 				}
 				return false;
 			}
@@ -84,12 +84,12 @@ exports.postLogin = async ctx => {
 			}
 			ctx.body = {
 				code : 200,
-				message : '登陆成功'
+				message : 'Login Successful'
 			}
 		} else {
 			ctx.body = {
 				code : 500,
-				message : '登陆失败'
+				message : 'Login Failed'
 			}
 		}
 	}).catch(err => {
@@ -101,6 +101,6 @@ exports.getLogout = async ctx => {
 	ctx.session = null
 	ctx.body = {
 		code : 200,
-		message : '退出成功'
+		message : 'Logout Successful'
 	}
 }

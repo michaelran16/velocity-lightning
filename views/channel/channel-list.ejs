@@ -1,7 +1,7 @@
 <%- include("../layouts/head",{type:'channel'}) %>
-	<a href="/channel-create"><div class="submit" style="width:auto;float: initial;">点击创建新通道</div></a>
+	<a href="/channel-create"><div class="submit" style="width:auto;float: initial;">Create New Channel</div></a>
 	<h1 style="text-align: center;">
-		通道列表
+		state channel
 	</h1>
 	<div class="container">
 		<ul class="posts">
@@ -16,7 +16,7 @@
 				</li>
 			<% }) %>
 		</ul>
-		<div style="margin-top: 30px" class="pagination" id="page"></div>	
+		<div style="margin-top: 30px" class="pagination" id="page"></div>
 	</div>
 	<script src="/js/pagination.js"></script>
 	<script>
@@ -24,8 +24,8 @@
 			selector: '#page',
 			totalPage: <%= countPage %>,
 			currentPage: 1,
-			prev: '上一页',
-			next: '下一页',
+			prev: 'Previous',
+			next: 'Next',
 			first: true,
 			last: true,
 			showTotalPage: true,
@@ -42,7 +42,7 @@
 					if (data != 'error') {
 						$('.posts').html(' ')
 						$.each(data,function(i,val){
-							var status = '<span style="height: 26px;background: ' 
+							var status = '<span style="height: 26px;background: '
 							status += val.channel_status==1?"#5FB878":"red"
 							status += ';width: 26px;border-radius: 50%;"></span>';
 							console.log(status)

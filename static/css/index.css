@@ -26,12 +26,16 @@ ul,li{
 a {
     text-decoration: none;
 }
+.modal-header {
+    border-bottom: none !important;
+}
 .head {
     width: 100%;
-    height: 80px;
+    height: 100px;
     position: fixed;
     left: 0;
-    top: 20px;
+    top: 0;
+    padding-top: 20px;
     padding-left: 10px;
     padding-right: 10px;
     background: #FFF;
@@ -430,7 +434,7 @@ a:hover {
     margin-top: 5px;
 }
 
-/* 我的钱包 */
+/* Stellar Wallet */
 .wallet-username {
     width: 100%;
     height: 80px;
@@ -443,7 +447,7 @@ a:hover {
 }
 
 .wallet-contack {
-    width: 15%;
+    width: 60px;
     height: 35px;
     float: left;
     line-height: 35px;

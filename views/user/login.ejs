@@ -49,14 +49,14 @@
 		<form class="form create" method="post ">
 			<div>
 				<label>Name：</label>
-				<input placeholder="请输入用户名" type="text" name="name" />
+				<input placeholder="Username" type="text" name="name" />
 			</div>
 			<div>
 				<label>Stellar地址：</label>
 				<textarea style="padding-right:5px;" name="secret"></textarea>
 			</div>
 			<div class="submit">登录</div>
-		</form>		
+		</form>
 	</div> -->
 
 	<script>
@@ -67,10 +67,10 @@
 		})
 		$('.login-btn').click(()=>{
 			if ($.trim($('input[name=name]').val())/*.trim()*/ == '') {
-				fade('请输入公钥！')
+				fade('Enter public key')
 			// } else if ($('textarea[name=secret]').val().trim() == '') {
 			} else if ($.trim($('input[name=secret]').val())/*.trim()*/ == '') {
-				fade('请输入密钥！')
+				fade('Enter secret key')
 			} else {
 				console.log($('.form').serialize())
 				$.ajax({
@@ -81,20 +81,20 @@
 					dataType: 'json',
 					success: function (data) {
 					    if(data.code==200) {
-						    fade('登录成功')
+						    fade('Operation Successful')
 						    setTimeout(()=>{
-							    window.location.href = "/channel-list"
-						    },1500)	               	
+							    window.location.href = "/wallet"
+						    },1500)
 					    } else {
 							$('input').val('')
-						    fade('用户名或密码错误')
+						    fade('Username or password error')
 					    }
 					},
 					error: function () {
 						fade('异常')
 					}
-				})			
+				})
 			}
-		})		
+		})
 	</script>
 <% include ../layouts/foot %>

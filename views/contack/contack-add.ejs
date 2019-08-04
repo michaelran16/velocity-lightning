@@ -1,15 +1,15 @@
 <%- include("../layouts/head",{type:'register'}) %>
 <div class="contack-add-wrap">
 	<div>
-        <label>联系人用户名：</label>
-        <input placeholder="请输入用户名" type="text" name="user_name" />
+        <label>Username：</label>
+        <input placeholder="Username" type="text" name="user_name" />
     </div>
 	<div class="submit">添加</div>
 </div>
 <script type="text/javascript">
 	$('.submit').click(()=>{
-			if ($('input[user_name=user_name]').val().trim() == '') {
-				fade('请输入对方用户名！')
+			if ($.trim($('input[name=user_name]').val()) == '') {
+				fade('Enter Counterpart！')
 			} else {
 				$.ajax({
 					url: "/contack-add",
@@ -20,26 +20,20 @@
 					cache: false,
 					dataType: 'json',
 					success: function (data) {
-					   if (data.message == '联系人存在') {
-						   $('input').val('')
-						   fade('联系人存在')
-					   } else if(data.message == '添加成功') {
-							var fromid = "<%= session.id %>";
-							var _data = '{"type":"text","fromid":"'+fromid+'","toid":"'+data.toid+'"}';
-							socket.emit('message', _data);
-							fade('添加成功')
+						if(!data.error) {
+							fade(data.msg)
 							setTimeout(()=>{
-								location.reload();
+								window.location.href="/wallet"
 							},1000)
 					   	} else {
-							fade(data.message)
+							fade(data.msg)
 					   	}
 					},
 					error: function () {
-						fade('异常')
+						fade('服务器异常')
 					}
-				})			
+				})
 			}
-		})		
+		})
 </script>
 <%- include ../layouts/foot %>

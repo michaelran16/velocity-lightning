@@ -9,7 +9,7 @@ router.post('/register', controllers.postRegister)
 // 登录页面
 router.get('/login', controllers.getLogin)
 router.get('/', controllers.getLogin)
-// 退出
+// Log Out
 router.get('/logout', controllers.getLogout)
 // post登录
 router.post('/login', controllers.postLogin)
