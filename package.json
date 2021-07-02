@@ -24,6 +24,6 @@
     "mysql": "^2.17.1",
     "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0",
-    "stellar-sdk": "^1.0.5"
+    "stellar-sdk": "^8.2.3"
   }
 }
